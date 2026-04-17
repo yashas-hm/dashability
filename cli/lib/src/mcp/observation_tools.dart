@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dart_mcp/server.dart';
-import 'package:dashability_core/dashability_core.dart';
 import 'package:dashability_cli/src/mcp/server.dart';
+import 'package:dashability_core/dashability_core.dart';
 
 /// Registers all observation MCP tools on the server.
 void registerObservationTools(DashabilityServer server) {
@@ -10,15 +10,16 @@ void registerObservationTools(DashabilityServer server) {
   server.registerTool(
     Tool(
       name: 'get_current_metrics',
-      description: 'Get current app performance metrics: FPS, jank frames, '
+      description:
+          'Get current app performance metrics: FPS, jank frames, '
           'error count, and widget rebuild hotspots.',
       inputSchema: ObjectSchema(),
     ),
     (request) {
       final frameObserver = server.observerManager.getObserver<FrameObserver>();
       final logObserver = server.observerManager.getObserver<LogObserver>();
-      final rebuildObserver =
-          server.observerManager.getObserver<RebuildObserver>();
+      final rebuildObserver = server.observerManager
+          .getObserver<RebuildObserver>();
 
       final metrics = {
         'fps': frameObserver?.currentFps ?? 0.0,
@@ -27,9 +28,7 @@ void registerObservationTools(DashabilityServer server) {
         'connected': server.connector.state.name,
       };
 
-      return CallToolResult(
-        content: [TextContent(text: jsonEncode(metrics))],
-      );
+      return CallToolResult(content: [TextContent(text: jsonEncode(metrics))]);
     },
   );
 
@@ -37,7 +36,8 @@ void registerObservationTools(DashabilityServer server) {
   server.registerTool(
     Tool(
       name: 'get_recent_frames',
-      description: 'Get recent frame timing data including build and render '
+      description:
+          'Get recent frame timing data including build and render '
           'times in milliseconds.',
       inputSchema: ObjectSchema(
         properties: {
@@ -57,7 +57,9 @@ void registerObservationTools(DashabilityServer server) {
 
       return CallToolResult(
         content: [
-          TextContent(text: jsonEncode(limited.map((f) => f.toJson()).toList())),
+          TextContent(
+            text: jsonEncode(limited.map((f) => f.toJson()).toList()),
+          ),
         ],
       );
     },
@@ -71,8 +73,8 @@ void registerObservationTools(DashabilityServer server) {
       inputSchema: ObjectSchema(),
     ),
     (request) {
-      final rebuildObserver =
-          server.observerManager.getObserver<RebuildObserver>();
+      final rebuildObserver = server.observerManager
+          .getObserver<RebuildObserver>();
       final hotspots = rebuildObserver?.hotspots ?? [];
 
       final result = [
@@ -80,9 +82,7 @@ void registerObservationTools(DashabilityServer server) {
           {'widget': entry.key, 'rebuild_count': entry.value},
       ];
 
-      return CallToolResult(
-        content: [TextContent(text: jsonEncode(result))],
-      );
+      return CallToolResult(content: [TextContent(text: jsonEncode(result))]);
     },
   );
 
@@ -130,7 +130,8 @@ void registerObservationTools(DashabilityServer server) {
   server.registerTool(
     Tool(
       name: 'get_anomalies',
-      description: 'Get detected anomalies since last call. Returns compressed '
+      description:
+          'Get detected anomalies since last call. Returns compressed '
           'context optimized for AI analysis. Clears the buffer after reading.',
       inputSchema: ObjectSchema(),
     ),
@@ -144,4 +145,3 @@ void registerObservationTools(DashabilityServer server) {
     },
   );
 }
-

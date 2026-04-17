@@ -16,10 +16,7 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
           'id': Schema.string(description: 'Accessibility ID to find and tap'),
         },
       ),
-      annotations: ToolAnnotations(
-        destructiveHint: false,
-        readOnlyHint: false,
-      ),
+      annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
     (request) async {
       final text = request.arguments?['text'] as String?;
@@ -39,7 +36,11 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
       }
 
       return CallToolResult(
-        content: [TextContent(text: jsonEncode({'status': 'tapped', 'target': id ?? text}))],
+        content: [
+          TextContent(
+            text: jsonEncode({'status': 'tapped', 'target': id ?? text}),
+          ),
+        ],
       );
     },
   );
@@ -60,22 +61,20 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
           ),
         },
       ),
-      annotations: ToolAnnotations(
-        destructiveHint: false,
-        readOnlyHint: false,
-      ),
+      annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
     (request) async {
       final direction = request.arguments!['direction'] as String;
       final distance = (request.arguments?['distance'] as num?)?.toDouble();
 
-      await actor.scroll(
-        direction: direction,
-        distance: distance ?? 500,
-      );
+      await actor.scroll(direction: direction, distance: distance ?? 500);
 
       return CallToolResult(
-        content: [TextContent(text: jsonEncode({'status': 'scrolled', 'direction': direction}))],
+        content: [
+          TextContent(
+            text: jsonEncode({'status': 'scrolled', 'direction': direction}),
+          ),
+        ],
       );
     },
   );
@@ -94,10 +93,7 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
           'value': Schema.string(description: 'Text to type'),
         },
       ),
-      annotations: ToolAnnotations(
-        destructiveHint: false,
-        readOnlyHint: false,
-      ),
+      annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
     (request) async {
       final field = request.arguments!['field'] as String;
@@ -106,7 +102,9 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
       await actor.type(field: field, value: value);
 
       return CallToolResult(
-        content: [TextContent(text: jsonEncode({'status': 'typed', 'field': field}))],
+        content: [
+          TextContent(text: jsonEncode({'status': 'typed', 'field': field})),
+        ],
       );
     },
   );

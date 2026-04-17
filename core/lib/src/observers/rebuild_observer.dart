@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:dashability_core/src/analysis/event_types.dart';
 import 'package:dashability_core/src/connector/config.dart';
 import 'package:dashability_core/src/connector/connector.dart';
+
 import 'observer.dart';
 
 /// Monitors widget rebuild counts via Flutter inspector service extensions.
@@ -96,14 +98,16 @@ class RebuildObserver implements Observer {
           final rate = delta / _pollInterval.inSeconds;
 
           if (rate > _config.rebuildSpikeThreshold) {
-            _eventController.add(RebuildSpike(
-              widget: name,
-              rebuildCount: delta,
-              window: _pollInterval,
-              severity: rate > _config.rebuildSpikeThreshold * 2
-                  ? EventSeverity.critical
-                  : EventSeverity.warning,
-            ));
+            _eventController.add(
+              RebuildSpike(
+                widget: name,
+                rebuildCount: delta,
+                window: _pollInterval,
+                severity: rate > _config.rebuildSpikeThreshold * 2
+                    ? EventSeverity.critical
+                    : EventSeverity.warning,
+              ),
+            );
           }
         }
       }

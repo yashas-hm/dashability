@@ -10,19 +10,14 @@ class AppiumActor {
   AppiumWebDriver? _driver;
 
   AppiumActor({Uri? appiumUrl})
-      : _appiumUrl = appiumUrl ?? Uri.parse('http://localhost:4723');
+    : _appiumUrl = appiumUrl ?? Uri.parse('http://localhost:4723');
 
   /// Whether a driver session is active.
   bool get isConnected => _driver != null;
 
   /// Connect to the Appium server and create a session.
-  Future<void> connect({
-    required Map<String, dynamic> capabilities,
-  }) async {
-    _driver = await createDriver(
-      uri: _appiumUrl,
-      desired: capabilities,
-    );
+  Future<void> connect({required Map<String, dynamic> capabilities}) async {
+    _driver = await createDriver(uri: _appiumUrl, desired: capabilities);
   }
 
   /// Disconnect and end the Appium session.
@@ -34,18 +29,14 @@ class AppiumActor {
   /// Tap an element found by text content.
   Future<void> tapByText(String text) async {
     _ensureConnected();
-    final element = await _driver!.findElement(
-      AppiumBy.accessibilityId(text),
-    );
+    final element = await _driver!.findElement(AppiumBy.accessibilityId(text));
     await element.click();
   }
 
   /// Tap an element found by accessibility ID.
   Future<void> tapById(String id) async {
     _ensureConnected();
-    final element = await _driver!.findElement(
-      AppiumBy.accessibilityId(id),
-    );
+    final element = await _driver!.findElement(AppiumBy.accessibilityId(id));
     await element.click();
   }
 
@@ -81,19 +72,14 @@ class AppiumActor {
         'endX': endX,
         'endY': endY,
         'duration': 300,
-      }
+      },
     ]);
   }
 
   /// Type text into an element found by accessibility ID.
-  Future<void> type({
-    required String field,
-    required String value,
-  }) async {
+  Future<void> type({required String field, required String value}) async {
     _ensureConnected();
-    final element = await _driver!.findElement(
-      AppiumBy.accessibilityId(field),
-    );
+    final element = await _driver!.findElement(AppiumBy.accessibilityId(field));
     await element.clear();
     await element.sendKeys(value);
   }

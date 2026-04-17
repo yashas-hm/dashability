@@ -7,10 +7,8 @@ sealed class ObservationEvent {
   final DateTime timestamp;
   final EventSeverity severity;
 
-  ObservationEvent({
-    DateTime? timestamp,
-    required this.severity,
-  }) : timestamp = timestamp ?? DateTime.now();
+  ObservationEvent({DateTime? timestamp, required this.severity})
+    : timestamp = timestamp ?? DateTime.now();
 
   Map<String, dynamic> toJson();
 }
@@ -28,14 +26,15 @@ class FrameTiming {
   }) : timestamp = timestamp ?? DateTime.now();
 
   double get totalMs => buildMs + renderMs;
+
   bool isJank(double thresholdMs) => totalMs > thresholdMs;
 
   Map<String, dynamic> toJson() => {
-        'build_ms': buildMs,
-        'render_ms': renderMs,
-        'total_ms': totalMs,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'build_ms': buildMs,
+    'render_ms': renderMs,
+    'total_ms': totalMs,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// Emitted when FPS drops below threshold for sustained period.
@@ -58,15 +57,15 @@ class FrameDrop extends ObservationEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': 'frame_drop',
-        'severity': severity.name,
-        'fps_avg': fpsAvg,
-        'jank_frames': jankFrames,
-        'total_frames': totalFrames,
-        'window_ms': window.inMilliseconds,
-        'top_widgets': topWidgets,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'type': 'frame_drop',
+    'severity': severity.name,
+    'fps_avg': fpsAvg,
+    'jank_frames': jankFrames,
+    'total_frames': totalFrames,
+    'window_ms': window.inMilliseconds,
+    'top_widgets': topWidgets,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// Emitted when widget rebuild count exceeds threshold.
@@ -85,13 +84,13 @@ class RebuildSpike extends ObservationEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': 'rebuild_spike',
-        'severity': severity.name,
-        'widget': widget,
-        'rebuild_count': rebuildCount,
-        'window_ms': window.inMilliseconds,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'type': 'rebuild_spike',
+    'severity': severity.name,
+    'widget': widget,
+    'rebuild_count': rebuildCount,
+    'window_ms': window.inMilliseconds,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// Emitted when an error or exception is caught.
@@ -110,13 +109,13 @@ class ErrorCaught extends ObservationEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': 'error_caught',
-        'severity': severity.name,
-        'message': message,
-        'stack_trace': stackTrace,
-        'source': source,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'type': 'error_caught',
+    'severity': severity.name,
+    'message': message,
+    'stack_trace': stackTrace,
+    'source': source,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// Emitted for log entries.
@@ -135,13 +134,13 @@ class LogEntry extends ObservationEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': 'log_entry',
-        'severity': severity.name,
-        'message': message,
-        'level': level,
-        'logger_name': loggerName,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'type': 'log_entry',
+    'severity': severity.name,
+    'message': message,
+    'level': level,
+    'logger_name': loggerName,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }
 
 /// Emitted as a periodic metrics snapshot.
@@ -164,12 +163,12 @@ class MetricsSnapshot extends ObservationEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': 'metrics_snapshot',
-        'fps': currentFps,
-        'jank_frames': jankFramesInWindow,
-        'total_frames': totalFramesInWindow,
-        'error_count': errorCount,
-        'rebuild_hotspots': rebuildCounts,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'type': 'metrics_snapshot',
+    'fps': currentFps,
+    'jank_frames': jankFramesInWindow,
+    'total_frames': totalFramesInWindow,
+    'error_count': errorCount,
+    'rebuild_hotspots': rebuildCounts,
+    'timestamp': timestamp.toIso8601String(),
+  };
 }

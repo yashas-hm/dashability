@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:dashability_core/dashability_core.dart';
 import 'package:dashability_cli/src/mcp/server.dart';
+import 'package:dashability_core/dashability_core.dart';
 
 Future<void> main(List<String> arguments) async {
   final parser = ArgParser()

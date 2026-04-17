@@ -26,9 +26,10 @@ class DashabilityConfig {
 
   /// Preset for profile-mode analysis with relaxed thresholds.
   const DashabilityConfig.profile()
-      : jankThresholdMs = 8.33, // 120fps budget
-        rebuildSpikeThreshold = 30,
-        batchWindowMs = 3000,
-        frameWindowSize = 240,
-        minJankFramesToAlert = 10;
+    : jankThresholdMs = 8.33,
+      // 120fps budget
+      rebuildSpikeThreshold = 30,
+      batchWindowMs = 3000,
+      frameWindowSize = 240,
+      minJankFramesToAlert = 10;
 }

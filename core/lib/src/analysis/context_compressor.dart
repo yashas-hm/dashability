@@ -24,8 +24,10 @@ class ContextCompressor {
     final frameDrops = events.whereType<FrameDrop>().toList();
     final rebuildSpikes = events.whereType<RebuildSpike>().toList();
     final errors = events.whereType<ErrorCaught>().toList();
-    final errorLogs =
-        events.whereType<LogEntry>().where((l) => l.level == 'error' || l.level == 'severe').toList();
+    final errorLogs = events
+        .whereType<LogEntry>()
+        .where((l) => l.level == 'error' || l.level == 'severe')
+        .toList();
 
     if (frameDrops.isNotEmpty) {
       compressed['performance'] = _compressFrameDrops(frameDrops);
@@ -83,9 +85,7 @@ class ContextCompressor {
       ..sort((a, b) => b.value.compareTo(a.value));
 
     return {
-      'widgets': {
-        for (final entry in sorted.take(5)) entry.key: entry.value,
-      },
+      'widgets': {for (final entry in sorted.take(5)) entry.key: entry.value},
     };
   }
 

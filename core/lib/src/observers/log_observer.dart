@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:vm_service/vm_service.dart' as vm;
-
 import 'package:dashability_core/src/analysis/event_types.dart';
 import 'package:dashability_core/src/connector/connector.dart';
+import 'package:vm_service/vm_service.dart' as vm;
+
 import 'observer.dart';
 
 /// Monitors log output and errors from the connected app.

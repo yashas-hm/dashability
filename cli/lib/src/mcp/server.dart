@@ -3,12 +3,11 @@ import 'dart:io';
 
 import 'package:dart_mcp/server.dart';
 import 'package:dart_mcp/stdio.dart';
+import 'package:dashability_cli/src/mcp/action_tools.dart';
+import 'package:dashability_cli/src/mcp/observation_tools.dart';
+import 'package:dashability_cli/src/mcp/validation_tools.dart';
 import 'package:dashability_core/dashability_core.dart';
 import 'package:stream_channel/stream_channel.dart';
-
-import 'package:dashability_cli/src/mcp/observation_tools.dart';
-import 'package:dashability_cli/src/mcp/action_tools.dart';
-import 'package:dashability_cli/src/mcp/validation_tools.dart';
 
 /// The Dashability MCP server.
 ///
@@ -30,10 +29,10 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
     required this.contextCompressor,
     this.appiumActor,
   }) : super.fromStreamChannel(
-          channel,
-          implementation: implementation,
-          instructions: instructions,
-        );
+         channel,
+         implementation: implementation,
+         instructions: instructions,
+       );
 
   /// Create and start a Dashability MCP server on stdio.
   static Future<DashabilityServer> start({
@@ -43,18 +42,13 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
     required ContextCompressor contextCompressor,
     AppiumActor? appiumActor,
   }) async {
-    final channel = stdioChannel(
-      input: stdin,
-      output: stdout,
-    );
+    final channel = stdioChannel(input: stdin, output: stdout);
 
     final server = DashabilityServer._(
       channel,
-      implementation: Implementation(
-        name: 'dashability',
-        version: '0.1.0',
-      ),
-      instructions: 'Dashability AI Observability Layer for Flutter apps. '
+      implementation: Implementation(name: 'dashability', version: '0.1.0'),
+      instructions:
+          'Dashability AI Observability Layer for Flutter apps. '
           'Use observation tools to monitor app performance, logs, and anomalies. '
           'Use action tools to interact with the app via Appium.',
       connector: connector,

@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:dashability_core/src/connector/connector.dart';
 import 'package:vm_service/vm_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-import 'package:dashability_core/src/connector/connector.dart';
 
 /// Connects to a running Flutter app via the Dart VM Service WebSocket.
 class FlutterConnector implements Connector {
@@ -52,7 +51,11 @@ class FlutterConnector implements Connector {
     try {
       // Ensure WebSocket scheme.
       final wsUri = uri.replace(
-        scheme: uri.scheme == 'http' ? 'ws' : uri.scheme == 'https' ? 'wss' : uri.scheme,
+        scheme: uri.scheme == 'http'
+            ? 'ws'
+            : uri.scheme == 'https'
+            ? 'wss'
+            : uri.scheme,
       );
 
       _channel = WebSocketChannel.connect(wsUri);

@@ -2,15 +2,22 @@
 
 ## Overview
 
-A **monorepo** containing multiple packages that together form an AI Observability Layer for Flutter (and eventually other) apps. The system connects externally to a running app, monitors performance/errors in real-time, detects anomalies locally, and exposes structured observation + action tools via MCP.
+A **monorepo** containing multiple packages that together form an AI Observability Layer for Flutter (and eventually
+other) apps. The system connects externally to a running app, monitors performance/errors in real-time, detects
+anomalies locally, and exposes structured observation + action tools via MCP.
 
 ## Key Architectural Decisions
 
 1. **Standalone external tool** — never runs inside the target app process. Zero coupling.
-2. **Monorepo with flat package dirs** — `core/`, `cli/`, `helper/` at root level (repo is already named `dashability/`).
+2. **Monorepo with flat package dirs** — `core/`, `cli/`, `helper/` at root level (repo is already named
+   `dashability/`).
 3. **Core is framework-agnostic** — connectors are pluggable, enabling multi-SDK support.
-4. **Dart-first with native connectors** — Flutter connector uses `vm_service` (Dart). Future SDK connectors use the best language for that platform, communicating via subprocess JSON protocol or Dart FFI where native APIs are needed (e.g. iOS Instruments via FFI to CoreFoundation/Objective-C).
-5. **Dart FFI for native platform access** — when adding iOS/Android-native observability, use `dart:ffi` to call platform debugging APIs directly (Instruments, ADB) without subprocess overhead. Not needed for MVP (VM Service is a WebSocket protocol).
+4. **Dart-first with native connectors** — Flutter connector uses `vm_service` (Dart). Future SDK connectors use the
+   best language for that platform, communicating via subprocess JSON protocol or Dart FFI where native APIs are
+   needed (e.g. iOS Instruments via FFI to CoreFoundation/Objective-C).
+5. **Dart FFI for native platform access** — when adding iOS/Android-native observability, use `dart:ffi` to call
+   platform debugging APIs directly (Instruments, ADB) without subprocess overhead. Not needed for MVP (VM Service is a
+   WebSocket protocol).
 
 ### Usage Flow
 
@@ -81,6 +88,7 @@ dashability/                           # Repo root
 ## Package Responsibilities
 
 ### `core/` (dashability_core)
+
 The engine. Framework-agnostic analysis + pluggable connectors.
 
 ```yaml
@@ -93,6 +101,7 @@ dependencies:
 No Flutter SDK. No MCP. Pure Dart.
 
 ### `cli/` (dashability_cli)
+
 User-facing tool. Wires core into an MCP server with a CLI interface.
 
 ```yaml
@@ -109,17 +118,20 @@ executables:
 Installed via `dart pub global activate` or compiled to native binary.
 
 ### `helper/` (dashability_helper)
+
 Optional. Tiny package users can add as `dev_dependency` for richer custom events.
 
 ```yaml
-dependencies: {}  # Zero — only uses dart:developer
+dependencies: { }  # Zero — only uses dart:developer
 ```
 
 ```dart
 import 'package:dashability_helper/dashability_helper.dart';
 
-DashabilityReporter.interaction('user_drew_stroke');
-DashabilityReporter.metric('canvas_points', 1523);
+DashabilityReporter.interaction
+('user_drew_stroke
+'
+);DashabilityReporter.metric('canvas_points', 1523);
 ```
 
 Strictly optional — dashability works fully without it.
@@ -127,47 +139,54 @@ Strictly optional — dashability works fully without it.
 ## Implementation Steps
 
 ### Step 1: Monorepo Setup
+
 - Create `core/`, `cli/`, `helper/` directories with pubspec.yaml files
 - Remove old placeholder structure (packages/ dir, etc.)
 - Set up path dependencies between packages
 
 ### Step 2: Core — Connector Interface & Flutter Connector
+
 - **Abstract `Connector`**: defines `connect(uri)`, `disconnect()`, exposes service instance and isolate info
 - **`FlutterConnector`** (implements `Connector`):
-  - Accepts VM Service URI (`ws://127.0.0.1:xxxxx/ws`)
-  - Connects via `vm_service` over WebSocket
-  - Resolves main isolate ID automatically
-  - Handles disconnect/reconnection
+    - Accepts VM Service URI (`ws://127.0.0.1:xxxxx/ws`)
+    - Connects via `vm_service` over WebSocket
+    - Resolves main isolate ID automatically
+    - Handles disconnect/reconnection
 - **`Config`**: tunable thresholds
-  - `jankThresholdMs` (default: 16.67ms — 60fps budget)
-  - `rebuildSpikeThreshold` (default: 50 rebuilds/sec)
-  - `batchWindowMs` (default: 5000ms for smart batching)
+    - `jankThresholdMs` (default: 16.67ms — 60fps budget)
+    - `rebuildSpikeThreshold` (default: 50 rebuilds/sec)
+    - `batchWindowMs` (default: 5000ms for smart batching)
 
 ### Step 3: Core — Observers
+
 - **Abstract `Observer`**: defines `start()`, `stop()`, `Stream<ObservationEvent> get events`
-- **`FrameObserver`**: subscribes to `onTimelineEvent`, tracks frame build/render times, computes rolling FPS, flags jank
+- **`FrameObserver`**: subscribes to `onTimelineEvent`, tracks frame build/render times, computes rolling FPS, flags
+  jank
 - **`LogObserver`**: subscribes to `onLoggingEvent` + `onStdoutEvent` + `onStderrEvent`, categorizes by level
 - **`RebuildObserver`**: polls `ext.flutter.inspector` extensions for widget rebuild counts, identifies hot widgets
 - **`ObserverManager`**: starts/stops all observers, merges into single `Stream<ObservationEvent>`
 
 ### Step 4: Core — Analysis
+
 - **Event types**: `FrameDrop`, `RebuildSpike`, `ErrorCaught`, `PerformanceDegradation` — typed models with `toJson()`
 - **`AnomalyDetector`** (Tier 1 rule-based):
-  - Frame drop: FPS below threshold for N consecutive frames
-  - Rebuild spike: rebuild count exceeds threshold in window
-  - Error: any uncaught exception or error-level log
+    - Frame drop: FPS below threshold for N consecutive frames
+    - Rebuild spike: rebuild count exceeds threshold in window
+    - Error: any uncaught exception or error-level log
 - **`ContextCompressor`**: transforms raw data into token-efficient structured JSON
 - Smart batching: aggregates events within `batchWindowMs` into single combined context
 
 ### Step 5: Core — Appium Actions
+
 - **`AppiumActor`**:
-  - Connects to Appium server (configurable URL, default `http://localhost:4723`)
-  - `tap({String? text, String? id})`, `scroll({String direction})`, `type({String field, String value})`
-  - `launchApp()`, `closeApp()`
-  - Uses `AppiumFlutterFinder` for Flutter-specific element location
-  - Gracefully optional — observation works without Appium
+    - Connects to Appium server (configurable URL, default `http://localhost:4723`)
+    - `tap({String? text, String? id})`, `scroll({String direction})`, `type({String field, String value})`
+    - `launchApp()`, `closeApp()`
+    - Uses `AppiumFlutterFinder` for Flutter-specific element location
+    - Gracefully optional — observation works without Appium
 
 ### Step 6: CLI — MCP Server
+
 - **`DashabilityServer`** extends `dart_mcp` server with `ToolsSupport`
 - Observation tools: `get_current_metrics`, `get_recent_frames`, `get_widget_hotspots`, `get_logs`, `get_anomalies`
 - Action tools (when Appium available): `tap`, `scroll`, `type`
@@ -175,24 +194,27 @@ Strictly optional — dashability works fully without it.
 - Stdio transport
 
 ### Step 7: CLI — Entry Point
+
 - `bin/dashability.dart` with `args` parsing:
-  - `--uri` (required) — VM Service WebSocket URI
-  - `--appium-url` (optional) — enables action tools
-  - `--profile` (flag) — preset thresholds for profile mode
+    - `--uri` (required) — VM Service WebSocket URI
+    - `--appium-url` (optional) — enables action tools
+    - `--profile` (flag) — preset thresholds for profile mode
 - Wires: FlutterConnector → ObserverManager → AnomalyDetector → MCP Server
 
 ### Step 8: Helper Package
+
 - `DashabilityReporter` class with static methods:
-  - `interaction(String action)` — posts `ai.interaction` event
-  - `metric(String name, num value)` — posts `ai.metric` event
-  - `screen(String name)` — posts `ai.screen` event
+    - `interaction(String action)` — posts `ai.interaction` event
+    - `metric(String name, num value)` — posts `ai.metric` event
+    - `screen(String name)` — posts `ai.screen` event
 - All implemented via `dart:developer.postEvent` — zero dependencies
 
 ### Step 9: Example App
+
 - Standalone Flutter app at root `example/`
 - Deliberately janky widgets for demo:
-  - Heavy rebuild widget (setState every frame)
-  - Janky scroll list
+    - Heavy rebuild widget (setState every frame)
+    - Janky scroll list
 - Optional `dashability_helper` usage for custom events
 - README: how to run, get VM Service URI, connect dashability
 
@@ -200,12 +222,12 @@ Strictly optional — dashability works fully without it.
 
 ### Connector Strategy by Framework
 
-| Framework | Connector approach | Language | Why |
-|-----------|-------------------|----------|-----|
-| **Flutter** | `vm_service` package over WebSocket | Dart (native) | Fully typed client exists in Dart |
-| **React Native** | Chrome DevTools Protocol over WebSocket | Dart (WebSocket JSON-RPC) | CDP is a protocol, no FFI needed |
-| **iOS Native (SwiftUI/UIKit)** | Instruments APIs via `dart:ffi` | Dart + FFI to ObjC/Swift | Native APIs, no WebSocket equivalent |
-| **Android Native** | ADB/debugger APIs via `dart:ffi` or subprocess | Dart + FFI to C/NDK | Platform-native debugging tools |
+| Framework                      | Connector approach                             | Language                  | Why                                  |
+|--------------------------------|------------------------------------------------|---------------------------|--------------------------------------|
+| **Flutter**                    | `vm_service` package over WebSocket            | Dart (native)             | Fully typed client exists in Dart    |
+| **React Native**               | Chrome DevTools Protocol over WebSocket        | Dart (WebSocket JSON-RPC) | CDP is a protocol, no FFI needed     |
+| **iOS Native (SwiftUI/UIKit)** | Instruments APIs via `dart:ffi`                | Dart + FFI to ObjC/Swift  | Native APIs, no WebSocket equivalent |
+| **Android Native**             | ADB/debugger APIs via `dart:ffi` or subprocess | Dart + FFI to C/NDK       | Platform-native debugging tools      |
 
 ### Adding a New Connector
 
@@ -218,7 +240,9 @@ The analysis, MCP, and action layers require **zero changes**.
 
 ### FFI Note
 
-`dart:ffi` enables calling C/C++/ObjC/Swift libraries directly from Dart without subprocess overhead. Useful for platform-native debugging APIs (Instruments, LLDB, ADB internals). Not needed for protocol-based connectors (VM Service, CDP) where WebSocket is the right approach.
+`dart:ffi` enables calling C/C++/ObjC/Swift libraries directly from Dart without subprocess overhead. Useful for
+platform-native debugging APIs (Instruments, LLDB, ADB internals). Not needed for protocol-based connectors (VM Service,
+CDP) where WebSocket is the right approach.
 
 ## Verification
 

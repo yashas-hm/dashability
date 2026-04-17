@@ -51,8 +51,10 @@ a well-written, thorough bug report. :v:
   can, including steps to reproduce, stack traces, compiler errors, library versions, OS versions, and screenshots (if
   applicable).
 
-- Especially put code blocks and console outputs in backticks (```). This improves readability. 
-Use **[GitHub-flavored Markdown](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).** 
+- Especially put code blocks and console outputs in backticks (```). This improves readability.
+  Use *
+  *[GitHub-flavored Markdown](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
+  **
 
 ## :love_letter: Feature Requests
 
@@ -115,7 +117,9 @@ and given **push access**. :tada:
   and [submit your pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork)
   to the repo's default branch. Usually this is `main`, but it could be `dev`, `develop`, or `master`.
 
-- Resolve any **[merge conflicts](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github)** that occur.
+- Resolve any *
+  *[merge conflicts](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github)
+  ** that occur.
 
 - **Promptly address any CI failures**. If your pull request fails to build or pass tests, please push another commit to
   fix it.

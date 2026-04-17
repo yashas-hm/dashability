@@ -9,7 +9,8 @@ void registerValidationTools(ToolsSupport server, AppiumActor actor) {
   server.registerTool(
     Tool(
       name: 'assert_visible',
-      description: 'Check if an element with the given text/ID is visible on screen.',
+      description:
+          'Check if an element with the given text/ID is visible on screen.',
       inputSchema: ObjectSchema(
         required: ['text'],
         properties: {
@@ -18,9 +19,7 @@ void registerValidationTools(ToolsSupport server, AppiumActor actor) {
           ),
         },
       ),
-      annotations: ToolAnnotations(
-        readOnlyHint: true,
-      ),
+      annotations: ToolAnnotations(readOnlyHint: true),
     ),
     (request) async {
       final text = request.arguments!['text'] as String;
@@ -28,12 +27,7 @@ void registerValidationTools(ToolsSupport server, AppiumActor actor) {
 
       return CallToolResult(
         content: [
-          TextContent(
-            text: jsonEncode({
-              'visible': visible,
-              'target': text,
-            }),
-          ),
+          TextContent(text: jsonEncode({'visible': visible, 'target': text})),
         ],
       );
     },

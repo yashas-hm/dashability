@@ -25,7 +25,8 @@ It is:
 
 Instead of writing tests:
 
-> AI attaches to a running app (or launches one), observes behavior in real time, and evaluates correctness and performance.
+> AI attaches to a running app (or launches one), observes behavior in real time, and evaluates correctness and
+performance.
 
 ---
 
@@ -92,7 +93,7 @@ Appium (optional actions)
 ### Important Distinction
 
 | Source   | Purpose                |
-| -------- | ---------------------- |
+|----------|------------------------|
 | DevTools | Internal truth         |
 | UI       | User-perceived reality |
 
@@ -141,7 +142,10 @@ Example:
   "summary": {
     "fps": 38,
     "jank_frames": 9,
-    "top_widgets": ["CanvasLayer", "Toolbar"]
+    "top_widgets": [
+      "CanvasLayer",
+      "Toolbar"
+    ]
   },
   "recent_action": "drawing stroke"
 }
@@ -269,9 +273,9 @@ take_screenshot()
 ## Action Tools
 
 ```ts
-tap({ text: "Add to Cart" })
-scroll({ direction: "down" })
-type({ field: "Search", value: "Shoes" })
+tap({text: "Add to Cart"})
+scroll({direction: "down"})
+type({field: "Search", value: "Shoes"})
 ```
 
 ---
@@ -356,7 +360,15 @@ Trigger AI only on anomalies
 ### Bad
 
 ```json
-{ "frames": [16, 17, 45, 60, 22] }
+{
+  "frames": [
+    16,
+    17,
+    45,
+    60,
+    22
+  ]
+}
 ```
 
 ### Good
@@ -402,8 +414,13 @@ Trigger AI only on anomalies
 
 ```json
 {
-  "events": ["frame_drop", "rebuild_spike"],
-  "combined_context": {...}
+  "events": [
+    "frame_drop",
+    "rebuild_spike"
+  ],
+  "combined_context": {
+    ...
+  }
 }
 ```
 
@@ -429,13 +446,17 @@ Avoid repeated AI calls.
 ### Instead of:
 
 ```json
-{ "widget_tree": "full tree" }
+{
+  "widget_tree": "full tree"
+}
 ```
 
 ### Send:
 
 ```json
-{ "diff": "CanvasLayer rebuild count increased from 20 → 120" }
+{
+  "diff": "CanvasLayer rebuild count increased from 20 → 120"
+}
 ```
 
 ---

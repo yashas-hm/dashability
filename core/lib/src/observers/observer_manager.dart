@@ -22,9 +22,7 @@ class ObserverManager {
   Future<void> startAll(Connector connector) async {
     for (final observer in _observers) {
       await observer.start(connector);
-      _subscriptions.add(
-        observer.events.listen(_eventController.add),
-      );
+      _subscriptions.add(observer.events.listen(_eventController.add));
     }
   }
 

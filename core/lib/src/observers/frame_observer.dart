@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:vm_service/vm_service.dart' as vm;
-
 import 'package:dashability_core/src/analysis/event_types.dart';
 import 'package:dashability_core/src/connector/config.dart';
 import 'package:dashability_core/src/connector/connector.dart';
+import 'package:vm_service/vm_service.dart' as vm;
+
 import 'observer.dart';
 
 /// Monitors frame timing via VM Service timeline events.
@@ -113,13 +113,15 @@ class FrameObserver implements Observer {
       final fps = currentFps;
       if (fps < 55) {
         // Only alert if FPS is meaningfully degraded.
-        _eventController.add(FrameDrop(
-          fpsAvg: fps,
-          jankFrames: jankCount,
-          totalFrames: _frames.length,
-          window: Duration(milliseconds: _config.batchWindowMs),
-          severity: fps < 30 ? EventSeverity.critical : EventSeverity.warning,
-        ));
+        _eventController.add(
+          FrameDrop(
+            fpsAvg: fps,
+            jankFrames: jankCount,
+            totalFrames: _frames.length,
+            window: Duration(milliseconds: _config.batchWindowMs),
+            severity: fps < 30 ? EventSeverity.critical : EventSeverity.warning,
+          ),
+        );
       }
     }
   }
