@@ -1,0 +1,15 @@
+name: dashability_core
+description: "Core engine for Dashability: connectors, observers, analysis, and actions for AI observability."
+version: 0.1.0
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  vm_service: ^15.0.2
+  web_socket_channel: ^3.0.2
+  appium_driver: ^0.7.1
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^5.1.0

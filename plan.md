@@ -7,8 +7,10 @@ A **monorepo** containing multiple packages that together form an AI Observabili
 ## Key Architectural Decisions
 
 1. **Standalone external tool** — never runs inside the target app process. Zero coupling.
-2. **Monorepo with separate packages** — clean separation of concerns, each package publishable independently.
+2. **Monorepo with flat package dirs** — `core/`, `cli/`, `helper/` at root level (repo is already named `dashability/`).
 3. **Core is framework-agnostic** — connectors are pluggable, enabling multi-SDK support.
+4. **Dart-first with native connectors** — Flutter connector uses `vm_service` (Dart). Future SDK connectors use the best language for that platform, communicating via subprocess JSON protocol or Dart FFI where native APIs are needed (e.g. iOS Instruments via FFI to CoreFoundation/Objective-C).
+5. **Dart FFI for native platform access** — when adding iOS/Android-native observability, use `dart:ffi` to call platform debugging APIs directly (Instruments, ADB) without subprocess overhead. Not needed for MVP (VM Service is a WebSocket protocol).
 
 ### Usage Flow
 
@@ -21,56 +23,55 @@ A **monorepo** containing multiple packages that together form an AI Observabili
 ## Monorepo Structure
 
 ```
-dashability/
-├── packages/
-│   ├── dashability_core/             # Engine: connectors, observers, analysis, actions
-│   │   ├── lib/
-│   │   │   ├── dashability_core.dart
-│   │   │   └── src/
-│   │   │       ├── connector/
-│   │   │       │   ├── connector.dart           # Abstract connector interface
-│   │   │       │   └── flutter/
-│   │   │       │       └── flutter_connector.dart  # VM Service implementation
-│   │   │       ├── observers/
-│   │   │       │   ├── observer.dart             # Abstract observer interface
-│   │   │       │   ├── frame_observer.dart       # FPS, jank detection
-│   │   │       │   ├── log_observer.dart         # Logs & errors
-│   │   │       │   ├── rebuild_observer.dart     # Widget rebuild tracking
-│   │   │       │   └── observer_manager.dart     # Lifecycle, stream aggregation
-│   │   │       ├── analysis/
-│   │   │       │   ├── anomaly_detector.dart     # Tier 1 rule-based detection
-│   │   │       │   ├── context_compressor.dart   # Raw signals → structured events
-│   │   │       │   └── event_types.dart          # Typed event models
-│   │   │       └── actions/
-│   │   │           └── appium_actor.dart         # Appium: tap, scroll, type
-│   │   ├── test/
-│   │   └── pubspec.yaml
-│   │
-│   ├── dashability_cli/              # CLI + MCP server — user-facing entry point
-│   │   ├── bin/
-│   │   │   └── dashability.dart      # CLI entry point
-│   │   ├── lib/
-│   │   │   └── src/
-│   │   │       └── mcp/
-│   │   │           ├── server.dart             # MCP server setup, tool registration
-│   │   │           ├── observation_tools.dart   # get_current_metrics, get_logs, etc.
-│   │   │           ├── action_tools.dart        # tap, scroll, type
-│   │   │           └── validation_tools.dart    # assert_visible
-│   │   ├── test/
-│   │   └── pubspec.yaml              # depends on dashability_core
-│   │
-│   └── dashability_helper/           # Optional tiny Dart package for in-app instrumentation
-│       ├── lib/
-│       │   ├── dashability_helper.dart
-│       │   └── src/
-│       │       └── reporter.dart     # Convenience wrappers around developer.postEvent
-│       ├── test/
-│       └── pubspec.yaml              # Zero external dependencies, pure dart:developer
+dashability/                           # Repo root
+├── core/                              # Engine: connectors, observers, analysis, actions
+│   ├── lib/
+│   │   ├── dashability_core.dart      # Barrel export
+│   │   └── src/
+│   │       ├── connector/
+│   │       │   ├── connector.dart              # Abstract connector interface
+│   │       │   └── flutter/
+│   │       │       └── flutter_connector.dart  # VM Service implementation
+│   │       ├── observers/
+│   │       │   ├── observer.dart               # Abstract observer interface
+│   │       │   ├── frame_observer.dart         # FPS, jank detection
+│   │       │   ├── log_observer.dart           # Logs & errors
+│   │       │   ├── rebuild_observer.dart       # Widget rebuild tracking
+│   │       │   └── observer_manager.dart       # Lifecycle, stream aggregation
+│   │       ├── analysis/
+│   │       │   ├── anomaly_detector.dart       # Tier 1 rule-based detection
+│   │       │   ├── context_compressor.dart     # Raw signals → structured events
+│   │       │   └── event_types.dart            # Typed event models
+│   │       └── actions/
+│   │           └── appium_actor.dart           # Appium: tap, scroll, type
+│   ├── test/
+│   └── pubspec.yaml
 │
-├── example/                          # Demo Flutter app with deliberate jank
+├── cli/                               # CLI + MCP server — user-facing entry point
+│   ├── bin/
+│   │   └── dashability.dart           # CLI entry point
+│   ├── lib/
+│   │   └── src/
+│   │       └── mcp/
+│   │           ├── server.dart                 # MCP server setup, tool registration
+│   │           ├── observation_tools.dart       # get_current_metrics, get_logs, etc.
+│   │           ├── action_tools.dart            # tap, scroll, type
+│   │           └── validation_tools.dart        # assert_visible
+│   ├── test/
+│   └── pubspec.yaml                   # depends on dashability_core (path: ../core)
+│
+├── helper/                            # Optional tiny Dart package for in-app instrumentation
+│   ├── lib/
+│   │   ├── dashability_helper.dart    # Barrel export
+│   │   └── src/
+│   │       └── reporter.dart          # Convenience wrappers around developer.postEvent
+│   ├── test/
+│   └── pubspec.yaml                   # Zero external dependencies
+│
+├── example/                           # Demo Flutter app with deliberate jank
 │   ├── lib/
 │   │   └── main.dart
-│   └── pubspec.yaml                  # Standalone Flutter app, optionally uses dashability_helper
+│   └── pubspec.yaml                   # Standalone Flutter app
 │
 ├── plan.md
 ├── idea.md
@@ -79,51 +80,41 @@ dashability/
 
 ## Package Responsibilities
 
-### `dashability_core`
+### `core/` (dashability_core)
 The engine. Framework-agnostic analysis + pluggable connectors.
 
-**Dependencies:**
 ```yaml
 dependencies:
   vm_service: ^15.0.2
   appium_driver: ^0.7.1
   web_socket_channel: ^3.0.0
-dev_dependencies:
-  test: ^1.25.0
-  lints: ^5.0.0
 ```
 
-**No Flutter SDK. No MCP. Pure Dart.**
+No Flutter SDK. No MCP. Pure Dart.
 
-### `dashability_cli`
-The user-facing tool. Wires core into an MCP server with a CLI interface.
+### `cli/` (dashability_cli)
+User-facing tool. Wires core into an MCP server with a CLI interface.
 
-**Dependencies:**
 ```yaml
 dependencies:
   dashability_core:
-    path: ../dashability_core
+    path: ../core
   dart_mcp: ^0.5.0
   args: ^2.5.0
-dev_dependencies:
-  test: ^1.25.0
-  lints: ^5.0.0
 
 executables:
   dashability: dashability
 ```
 
-Installed via `dart pub global activate dashability_cli` or compiled to native binary.
+Installed via `dart pub global activate` or compiled to native binary.
 
-### `dashability_helper`
-Optional. Tiny package users can add as `dev_dependency` to their Flutter app for richer custom events.
+### `helper/` (dashability_helper)
+Optional. Tiny package users can add as `dev_dependency` for richer custom events.
 
-**Dependencies:**
 ```yaml
 dependencies: {}  # Zero — only uses dart:developer
 ```
 
-Provides convenience like:
 ```dart
 import 'package:dashability_helper/dashability_helper.dart';
 
@@ -131,15 +122,14 @@ DashabilityReporter.interaction('user_drew_stroke');
 DashabilityReporter.metric('canvas_points', 1523);
 ```
 
-This is strictly optional — dashability works fully without it.
+Strictly optional — dashability works fully without it.
 
 ## Implementation Steps
 
 ### Step 1: Monorepo Setup
-- Create `packages/dashability_core/`, `packages/dashability_cli/`, `packages/dashability_helper/`
-- Set up each `pubspec.yaml` with correct dependencies and path references
-- Clean out current placeholder code (`Calculator` class, etc.)
-- Move `example/` to root level as standalone Flutter app
+- Create `core/`, `cli/`, `helper/` directories with pubspec.yaml files
+- Remove old placeholder structure (packages/ dir, etc.)
+- Set up path dependencies between packages
 
 ### Step 2: Core — Connector Interface & Flutter Connector
 - **Abstract `Connector`**: defines `connect(uri)`, `disconnect()`, exposes service instance and isolate info
@@ -208,19 +198,32 @@ This is strictly optional — dashability works fully without it.
 
 ## Multi-SDK Extensibility
 
-Adding a new framework connector (e.g. React Native via Chrome DevTools Protocol):
+### Connector Strategy by Framework
 
-1. Create `packages/dashability_core/lib/src/connector/react_native/rn_connector.dart`
+| Framework | Connector approach | Language | Why |
+|-----------|-------------------|----------|-----|
+| **Flutter** | `vm_service` package over WebSocket | Dart (native) | Fully typed client exists in Dart |
+| **React Native** | Chrome DevTools Protocol over WebSocket | Dart (WebSocket JSON-RPC) | CDP is a protocol, no FFI needed |
+| **iOS Native (SwiftUI/UIKit)** | Instruments APIs via `dart:ffi` | Dart + FFI to ObjC/Swift | Native APIs, no WebSocket equivalent |
+| **Android Native** | ADB/debugger APIs via `dart:ffi` or subprocess | Dart + FFI to C/NDK | Platform-native debugging tools |
+
+### Adding a New Connector
+
+1. Create `core/lib/src/connector/<framework>/` directory
 2. Implement the abstract `Connector` interface
 3. Add framework-specific observers implementing the `Observer` interface
-4. CLI auto-detects or accepts `--framework flutter|rn|swift` flag
+4. CLI accepts `--framework flutter|rn|ios|android` flag
 
 The analysis, MCP, and action layers require **zero changes**.
 
+### FFI Note
+
+`dart:ffi` enables calling C/C++/ObjC/Swift libraries directly from Dart without subprocess overhead. Useful for platform-native debugging APIs (Instruments, LLDB, ADB internals). Not needed for protocol-based connectors (VM Service, CDP) where WebSocket is the right approach.
+
 ## Verification
 
-1. **Unit tests** (`dashability_core`): anomaly detection, context compression, event types, connector mocks
-2. **Unit tests** (`dashability_cli`): MCP tool registration, argument parsing
+1. **Unit tests** (`core/`): anomaly detection, context compression, event types, connector mocks
+2. **Unit tests** (`cli/`): MCP tool registration, argument parsing
 3. **Integration test**: connect to example app's VM Service, call observation tools, verify output
 4. **End-to-end**: MCP host → dashability CLI → running Flutter app → structured observations
-5. **Compile test**: `dart compile exe packages/dashability_cli/bin/dashability.dart`
+5. **Compile test**: `dart compile exe cli/bin/dashability.dart`
