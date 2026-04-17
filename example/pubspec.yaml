@@ -1,0 +1,22 @@
+name: dashability_example
+description: "Demo Flutter app with deliberate jank for testing Dashability."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.11.1
+  flutter: ">=3.32.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  dashability_helper:
+    path: ../helper
+
+flutter:
+  uses-material-design: true
