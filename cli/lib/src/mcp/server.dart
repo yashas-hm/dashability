@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_mcp/server.dart';
@@ -21,16 +20,20 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
   final ContextCompressor contextCompressor;
   final AppiumActor? appiumActor;
 
-  DashabilityServer._({
-    required super.channel,
-    required super.implementation,
-    super.instructions,
+  DashabilityServer._(
+    StreamChannel<String> channel, {
+    required Implementation implementation,
+    String? instructions,
     required this.connector,
     required this.observerManager,
     required this.anomalyDetector,
     required this.contextCompressor,
     this.appiumActor,
-  }) : super.fromStreamChannel();
+  }) : super.fromStreamChannel(
+          channel,
+          implementation: implementation,
+          instructions: instructions,
+        );
 
   /// Create and start a Dashability MCP server on stdio.
   static Future<DashabilityServer> start({
@@ -46,7 +49,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
     );
 
     final server = DashabilityServer._(
-      channel: channel,
+      channel,
       implementation: Implementation(
         name: 'dashability',
         version: '0.1.0',
@@ -68,16 +71,10 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
   FutureOr<InitializeResult> initialize(InitializeRequest request) async {
     final result = await super.initialize(request);
 
-    // Register observation tools.
     registerObservationTools(this);
 
-    // Register action tools (only if Appium is available).
     if (appiumActor != null) {
       registerActionTools(this, appiumActor!);
-    }
-
-    // Register validation tools (only if Appium is available).
-    if (appiumActor != null) {
       registerValidationTools(this, appiumActor!);
     }
 
