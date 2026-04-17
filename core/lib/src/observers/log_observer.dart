@@ -72,7 +72,7 @@ class LogObserver implements Observer {
     if (logRecord == null) return;
 
     final message = logRecord.message?.valueAsString ?? '';
-    final level = _levelFromValue(logRecord.level);
+    final level = _levelFromValue(logRecord.level as vm.InstanceRef?);
     final loggerName = logRecord.loggerName?.valueAsString;
 
     final isError = level == 'error' || level == 'severe';

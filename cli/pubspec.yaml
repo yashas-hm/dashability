@@ -1,6 +1,7 @@
 name: dashability_cli
 description: "CLI and MCP server for Dashability AI observability."
 version: 0.1.0
+publish_to: none
 
 environment:
   sdk: ^3.11.1

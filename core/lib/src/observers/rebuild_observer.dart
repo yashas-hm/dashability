@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
-
 import 'package:dashability_core/src/analysis/event_types.dart';
 import 'package:dashability_core/src/connector/config.dart';
 import 'package:dashability_core/src/connector/connector.dart';
