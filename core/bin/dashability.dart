@@ -2,8 +2,15 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:dashability/dashability.dart';
+import 'package:dashability/src/cli/install_mcp.dart';
 
 Future<void> main(List<String> arguments) async {
+  // Subcommand routing.
+  if (arguments.isNotEmpty && arguments.first == 'install-mcp') {
+    await installMcp(arguments.sublist(1));
+    return;
+  }
+
   final parser = ArgParser()
     ..addOption(
       'uri',
@@ -57,6 +64,9 @@ Future<void> main(List<String> arguments) async {
     stderr.writeln('Dashability — AI Observability Layer for Flutter Apps');
     stderr.writeln('');
     stderr.writeln('Usage: dashability [options]');
+    stderr.writeln('');
+    stderr.writeln('Commands:');
+    stderr.writeln('  install-mcp [host]     Install MCP server config for an AI host');
     stderr.writeln('');
     stderr.writeln('Modes:');
     stderr.writeln('  --uri <ws://...>       Direct connect to VM Service');
