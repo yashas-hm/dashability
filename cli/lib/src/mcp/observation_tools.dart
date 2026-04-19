@@ -126,6 +126,61 @@ void registerObservationTools(DashabilityServer server) {
     },
   );
 
+  // get_widget_tree
+  server.registerTool(
+    Tool(
+      name: 'get_widget_tree',
+      description: 'Get the current widget tree of the running Flutter app. '
+          'Returns a summary tree showing only user-created widgets '
+          '(framework internals are filtered out). Use this to understand '
+          'the app structure, find specific widgets, and diagnose layout issues.',
+      inputSchema: ObjectSchema(
+        properties: {
+          'depth': Schema.int(
+            description: 'Max depth of the tree to return (default 10). '
+                'Use lower values for a high-level overview, higher for detail.',
+          ),
+        },
+      ),
+    ),
+    (request) async {
+      final depth = (request.arguments?['depth'] as int?) ?? 10;
+
+      try {
+        // Get the root widget summary tree (user widgets only).
+        final result = await server.connector.callServiceExtension(
+          'ext.flutter.inspector.getRootWidgetSummaryTreeWithPreviews',
+          args: {'groupName': 'dashability'},
+        );
+
+        final tree = _pruneTree(result, depth, 0);
+        return CallToolResult(
+          content: [TextContent(text: jsonEncode(tree))],
+        );
+      } catch (_) {
+        // Fallback to the basic tree if previews aren't available.
+        try {
+          final result = await server.connector.callServiceExtension(
+            'ext.flutter.inspector.getRootWidgetSummaryTree',
+            args: {'groupName': 'dashability'},
+          );
+
+          final tree = _pruneTree(result, depth, 0);
+          return CallToolResult(
+            content: [TextContent(text: jsonEncode(tree))],
+          );
+        } catch (e) {
+          return CallToolResult(
+            isError: true,
+            content: [
+              TextContent(text: 'Failed to get widget tree: $e'),
+            ],
+          );
+        }
+      }
+    },
+  );
+
   // get_anomalies
   server.registerTool(
     Tool(
@@ -144,4 +199,45 @@ void registerObservationTools(DashabilityServer server) {
       );
     },
   );
+}
+
+/// Recursively prunes a widget tree to the given [maxDepth].
+///
+/// Keeps only the fields useful for AI analysis: widget type, description,
+/// creation location, and children.
+Map<String, dynamic> _pruneTree(
+  Map<String, dynamic> node,
+  int maxDepth,
+  int currentDepth,
+) {
+  final pruned = <String, dynamic>{};
+
+  if (node.containsKey('description')) {
+    pruned['widget'] = node['description'];
+  }
+  if (node.containsKey('type')) {
+    pruned['type'] = node['type'];
+  }
+  if (node.containsKey('creationLocation')) {
+    final loc = node['creationLocation'];
+    if (loc is Map<String, dynamic>) {
+      pruned['location'] = '${loc['file']}:${loc['line']}';
+    }
+  }
+  if (node.containsKey('hasChildren')) {
+    pruned['has_children'] = node['hasChildren'];
+  }
+
+  final children = node['children'];
+  if (children is List && currentDepth < maxDepth) {
+    pruned['children'] = [
+      for (final child in children)
+        if (child is Map<String, dynamic>)
+          _pruneTree(child, maxDepth, currentDepth + 1),
+    ];
+  } else if (children is List && children.isNotEmpty) {
+    pruned['children_truncated'] = children.length;
+  }
+
+  return pruned;
 }
