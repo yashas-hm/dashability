@@ -6,6 +6,41 @@ import 'package:dart_mcp/stdio.dart';
 import 'package:dashability/dashability.dart';
 import 'package:stream_channel/stream_channel.dart';
 
+const _serverInstructions = '''
+You have access to Dashability, an AI runtime observer for Flutter apps. Dashability connects to a running Flutter app via the Dart VM Service and gives you real-time performance data, logs, widget rebuild counts, and anomaly detection.
+
+IMPORTANT: Dashability is a RUNTIME observer. You must actually run the Flutter app and observe it while it is running. Do not just read source code and do static analysis. The value of Dashability is that it tells you what is actually happening at runtime - frame drops, rebuild spikes, errors, and performance metrics from the live app.
+
+TOOLS:
+
+Lifecycle (manage the app):
+- get_connection_status: Check if connected to a Flutter app. Always call this first.
+- list_devices: List available Flutter devices (emulators, simulators, physical). Ask the user which device to use.
+- run_app: Launch a Flutter app from a project directory on a device. Automatically connects observers.
+- attach_to_app: Connect to an already-running Flutter app. If multiple apps are running, returns a list to choose from.
+- stop_app: Stop the app and disconnect all observers.
+
+Observation (monitor the running app):
+- get_current_metrics: Current FPS, error count, and widget rebuild hotspots.
+- get_recent_frames: Frame timing history (build and render ms per frame).
+- get_logs: Recent log entries from the app, filterable by level.
+- get_anomalies: Detected anomalies (frame drops, rebuild spikes, errors) since last call. Clears after reading.
+- get_widget_tree: Live widget tree of the running app.
+- get_widget_hotspots: Top rebuilding widgets sorted by rebuild count.
+
+WORKFLOW:
+
+1. Call get_connection_status. If already connected, skip to step 4.
+2. Call list_devices. Present the devices to the user and ask which one to use.
+3. Call run_app with the project directory and chosen device ID. Wait for connection confirmation.
+4. Call get_current_metrics, get_logs, and get_anomalies to observe the app.
+5. If you find performance issues or errors, fix the code, then call stop_app and run_app again to verify.
+6. Repeat step 4-5 until the app runs clean: stable FPS, no anomalies, no errors.
+7. Call stop_app when finished.
+
+All observation tools require an active connection. If not connected, they return an error telling you to call run_app or attach_to_app first.
+''';
+
 /// The Dashability MCP server.
 ///
 /// Supports two modes:
@@ -75,11 +110,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
     final server = DashabilityServer._(
       channel,
       implementation: Implementation(name: 'dashability', version: '0.1.0'),
-      instructions:
-      'Dashability AI Observability Layer for Flutter apps. '
-          'Use lifecycle tools to connect to a Flutter app, then '
-          'use observation tools to monitor performance, logs, and anomalies. '
-          'Use action tools to interact with the app via Appium.',
+      instructions: _serverInstructions,
       flutterProcess: flutterProcess ?? FlutterProcess(),
       config: config,
       appiumActor: appiumActor,

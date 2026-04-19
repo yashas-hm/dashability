@@ -61,12 +61,23 @@ Supported hosts: Claude Desktop, Claude Code, Cursor, Windsurf, Codex, Gemini CL
 
 ### 3. Start Dashability
 
-Dashability can run in several modes:
+Running `dashability` with no arguments shows an interactive menu:
+
+```
+Dashability - AI Observability Layer for Flutter Apps
+
+1. Start MCP Server
+2. Install MCP
+3. List Devices
+4. Run App
+5. Attach to App
+
+Select an option (1-5):
+```
+
+You can also pass flags directly:
 
 ```bash
-# Agent-driven (recommended) - start MCP server, agent manages everything
-dashability
-
 # Run a Flutter app and connect automatically
 dashability --project-dir ./my_app -d emulator-5554
 
@@ -77,8 +88,18 @@ dashability --attach
 dashability --uri ws://127.0.0.1:12345/xxxxx=/ws
 ```
 
-In agent-driven mode (no flags), the AI agent uses lifecycle tools to list devices, run or attach to an app, and then
-observe it, all without manual setup.
+### Agent Workflow
+
+Dashability is designed for an autonomous observe-fix-verify loop. The AI agent drives the entire workflow:
+
+1. **Connect** - call `get_connection_status`, then `list_devices` to find devices, ask the user which to use, call `run_app` to launch the app (or `attach_to_app` for an already-running app)
+2. **Observe** - call `get_current_metrics`, `get_logs`, `get_anomalies`, `get_widget_hotspots` to see real runtime performance data
+3. **Fix** - modify the code based on real observations (frame drops, rebuild spikes, errors)
+4. **Verify** - call `stop_app`, then `run_app` again to relaunch, observe again to confirm the fix
+5. **Repeat** - loop steps 2-4 until the app runs clean
+6. **Done** - call `stop_app` when finished
+
+The MCP server delivers these instructions to any connected agent automatically. No special prompting needed.
 
 ---
 
@@ -184,8 +205,9 @@ cd example && flutter run --profile
 # In another terminal:
 dashability --attach
 
-# Option 3: Agent-driven (start MCP server, agent does the rest)
+# Option 3: Start MCP server, agent does the rest
 dashability
+# Select "1. Start MCP Server" from the menu
 ```
 
 The example app includes:

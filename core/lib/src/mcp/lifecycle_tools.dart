@@ -324,23 +324,36 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'get_connection_status',
       description:
-      'Get the current connection status of Dashability. '
-          'Returns whether connected, the VM Service URI, '
-          'and whether a flutter process is managed.',
+      'Check if Dashability is connected to a Flutter app. '
+          'Start here to understand the current state. '
+          'If not connected, follow the instructions in the response '
+          'to connect to an app.',
       inputSchema: ObjectSchema(),
     ),
         (request) {
+      final status = <String, dynamic>{
+        'connected': server.isConnected,
+        'flutter_process_running': server.flutterProcess.isRunning,
+      };
+
+      if (server.isConnected) {
+        status['connector_state'] = server.connector!.state.name;
+        status['message'] =
+            'Connected and observing. Use observation tools '
+            '(get_current_metrics, get_logs, get_anomalies, '
+            'get_recent_frames, get_widget_tree, get_widget_hotspots) '
+            'to monitor the app.';
+      } else {
+        status['message'] =
+            'Not connected to a Flutter app. '
+            'Call list_devices to find available devices, then call '
+            'run_app with a project directory and device ID to launch '
+            'an app. Or call attach_to_app to connect to an '
+            'already-running app.';
+      }
+
       return CallToolResult(
-        content: [
-          TextContent(
-            text: jsonEncode({
-              'connected': server.isConnected,
-              'flutter_process_running': server.flutterProcess.isRunning,
-              if (server.isConnected)
-                'connector_state': server.connector!.state.name,
-            }),
-          ),
-        ],
+        content: [TextContent(text: jsonEncode(status))],
       );
     },
   );

@@ -27,7 +27,7 @@ __MACOSX__/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+build/
 
 # Symbolization related
 app.*.symbols
