@@ -2,8 +2,7 @@
 <div align="center">
 <img src="./assets/dashability_avatar.png" width="50%">
 
-## DashAbility
-#### AI Observability Layer for Flutter Apps
+### AI Observability Layer for Flutter Apps
 </div>
 
 A standalone external tool that connects to a running Flutter app, monitors
