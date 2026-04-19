@@ -3,6 +3,17 @@ import 'dart:convert';
 import 'package:dart_mcp/server.dart';
 import 'package:dashability/dashability.dart';
 
+/// Error result returned when the server is not connected to a Flutter app.
+CallToolResult _notConnectedError() => CallToolResult(
+      isError: true,
+      content: [
+        TextContent(
+          text: 'Not connected to a Flutter app. '
+              'Use run_app or attach_to_app first.',
+        ),
+      ],
+    );
+
 /// Registers all observation MCP tools on the server.
 void registerObservationTools(DashabilityServer server) {
   // get_current_metrics
@@ -15,16 +26,20 @@ void registerObservationTools(DashabilityServer server) {
       inputSchema: ObjectSchema(),
     ),
     (request) {
-      final frameObserver = server.observerManager.getObserver<FrameObserver>();
-      final logObserver = server.observerManager.getObserver<LogObserver>();
-      final rebuildObserver = server.observerManager
-          .getObserver<RebuildObserver>();
+      if (!server.isConnected) return _notConnectedError();
+
+      final frameObserver =
+          server.observerManager!.getObserver<FrameObserver>();
+      final logObserver =
+          server.observerManager!.getObserver<LogObserver>();
+      final rebuildObserver =
+          server.observerManager!.getObserver<RebuildObserver>();
 
       final metrics = {
         'fps': frameObserver?.currentFps ?? 0.0,
         'error_count': logObserver?.errorCount ?? 0,
         'rebuild_hotspots': rebuildObserver?.rebuildCounts ?? {},
-        'connected': server.connector.state.name,
+        'connected': server.connector!.state.name,
       };
 
       return CallToolResult(content: [TextContent(text: jsonEncode(metrics))]);
@@ -47,7 +62,10 @@ void registerObservationTools(DashabilityServer server) {
       ),
     ),
     (request) {
-      final frameObserver = server.observerManager.getObserver<FrameObserver>();
+      if (!server.isConnected) return _notConnectedError();
+
+      final frameObserver =
+          server.observerManager!.getObserver<FrameObserver>();
       final limit = (request.arguments?['limit'] as int?) ?? 20;
       final frames = frameObserver?.recentFrames ?? [];
       final limited = frames.length > limit
@@ -72,8 +90,10 @@ void registerObservationTools(DashabilityServer server) {
       inputSchema: ObjectSchema(),
     ),
     (request) {
-      final rebuildObserver = server.observerManager
-          .getObserver<RebuildObserver>();
+      if (!server.isConnected) return _notConnectedError();
+
+      final rebuildObserver =
+          server.observerManager!.getObserver<RebuildObserver>();
       final hotspots = rebuildObserver?.hotspots ?? [];
 
       final result = [
@@ -103,7 +123,10 @@ void registerObservationTools(DashabilityServer server) {
       ),
     ),
     (request) {
-      final logObserver = server.observerManager.getObserver<LogObserver>();
+      if (!server.isConnected) return _notConnectedError();
+
+      final logObserver =
+          server.observerManager!.getObserver<LogObserver>();
       final level = request.arguments?['level'] as String?;
       final limit = (request.arguments?['limit'] as int?) ?? 50;
 
@@ -143,11 +166,12 @@ void registerObservationTools(DashabilityServer server) {
       ),
     ),
     (request) async {
+      if (!server.isConnected) return _notConnectedError();
+
       final depth = (request.arguments?['depth'] as int?) ?? 10;
 
       try {
-        // Get the root widget summary tree (user widgets only).
-        final result = await server.connector.callServiceExtension(
+        final result = await server.connector!.callServiceExtension(
           'ext.flutter.inspector.getRootWidgetSummaryTreeWithPreviews',
           args: {'groupName': 'dashability'},
         );
@@ -157,9 +181,8 @@ void registerObservationTools(DashabilityServer server) {
           content: [TextContent(text: jsonEncode(tree))],
         );
       } catch (_) {
-        // Fallback to the basic tree if previews aren't available.
         try {
-          final result = await server.connector.callServiceExtension(
+          final result = await server.connector!.callServiceExtension(
             'ext.flutter.inspector.getRootWidgetSummaryTree',
             args: {'groupName': 'dashability'},
           );
@@ -190,7 +213,9 @@ void registerObservationTools(DashabilityServer server) {
       inputSchema: ObjectSchema(),
     ),
     (request) {
-      final anomalies = server.anomalyDetector.drainAnomalies();
+      if (!server.isConnected) return _notConnectedError();
+
+      final anomalies = server.anomalyDetector!.drainAnomalies();
       final compressed = server.contextCompressor.compress(anomalies);
 
       return CallToolResult(
@@ -201,9 +226,6 @@ void registerObservationTools(DashabilityServer server) {
 }
 
 /// Recursively prunes a widget tree to the given [maxDepth].
-///
-/// Keeps only the fields useful for AI analysis: widget type, description,
-/// creation location, and children.
 Map<String, dynamic> _pruneTree(
   Map<String, dynamic> node,
   int maxDepth,

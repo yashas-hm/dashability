@@ -9,7 +9,6 @@ import 'package:dashability/src/connector/config.dart';
 /// Consumes raw [ObservationEvent]s from observers, applies rules,
 /// and emits only anomalies worth reporting to the AI layer.
 class AnomalyDetector {
-  final DashabilityConfig _config;
   final _anomalyController = StreamController<ObservationEvent>.broadcast();
   StreamSubscription<ObservationEvent>? _subscription;
 
