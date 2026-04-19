@@ -1,3 +1,23 @@
+/// Example Flutter app for Dashability.
+///
+/// Install and run Dashability to observe this app:
+///
+/// ```bash
+/// dart pub global activate dashability
+///
+/// # Agent-driven (recommended)
+/// dashability
+///
+/// # Run this app and observe
+/// dashability --project-dir ./example -d emulator-5554
+///
+/// # Attach to a running app
+/// dashability --attach
+///
+/// # Direct connect
+/// dashability --uri ws://127.0.0.1:12345/ws
+/// ```
+
 import 'dart:math';
 
 import 'package:dashability_extensions/dashability_extensions.dart';
