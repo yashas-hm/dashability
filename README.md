@@ -1,6 +1,6 @@
 
 <div align="center">
-<img src="./assets/dashability_avatar.png">
+<img src="./assets/dashability_avatar.png" width="50%">
 
 ## DashAbility
 #### AI Observability Layer for Flutter Apps
