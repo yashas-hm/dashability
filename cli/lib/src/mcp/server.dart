@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:dart_mcp/server.dart';
 import 'package:dart_mcp/stdio.dart';
-import 'package:dashability_cli/src/mcp/action_tools.dart';
-import 'package:dashability_cli/src/mcp/observation_tools.dart';
-import 'package:dashability_cli/src/mcp/validation_tools.dart';
+import 'package:dashability/src/mcp/action_tools.dart';
+import 'package:dashability/src/mcp/observation_tools.dart';
+import 'package:dashability/src/mcp/validation_tools.dart';
 import 'package:dashability_core/dashability_core.dart';
 import 'package:stream_channel/stream_channel.dart';
 

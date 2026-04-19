@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dart_mcp/server.dart';
-import 'package:dashability_cli/src/mcp/server.dart';
+import 'package:dashability/src/mcp/server.dart';
 import 'package:dashability_core/dashability_core.dart';
 
 /// Registers all observation MCP tools on the server.

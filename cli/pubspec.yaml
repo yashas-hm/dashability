@@ -1,5 +1,5 @@
-name: dashability_cli
-description: "CLI and MCP server for Dashability AI observability."
+name: dashability
+description: "AI Observability Layer for Flutter Apps — CLI and MCP server."
 version: 0.1.0
 publish_to: none
 

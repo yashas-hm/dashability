@@ -55,7 +55,7 @@ dart run cli/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
       typed event models (`FrameDrop`, `RebuildSpike`, `ErrorCaught`, etc.).
     - **Actions** — `AppiumActor` for app interaction (tap, scroll, type) via `appium_driver`. Gracefully optional.
 
-- **`cli/`** (`dashability_cli`) — User-facing entry point. Depends on `dashability_core` via `path: ../core`. Contains:
+- **`cli/`** (`dashability`) — User-facing entry point. Depends on `dashability_core` via `path: ../core`. Contains:
     - **MCP Server** — Uses `dart_mcp` with `ToolsSupport` mixin, stdio transport. Registers observation tools (
       `get_current_metrics`, `get_logs`, `get_anomalies`), action tools (`tap`, `scroll`, `type`), and validation
       tools (`assert_visible`).
