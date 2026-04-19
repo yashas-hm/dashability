@@ -2,14 +2,14 @@
 <div align="center">
 <img src="./assets/dashability_avatar.png" width="50%">
 
-### AI Observability Layer for Flutter Apps
+### Runtime Observability Layer for Flutter Apps
 </div>
 
 A standalone external tool that connects to a running Flutter app, monitors
 performance and errors in real-time, detects anomalies, and exposes structured observation + action tools via
 MCP (Model Context Protocol).
 
-Dashability is **not** a testing framework and **not** just an MCP server. It is an AI runtime layer that understands and
+Dashability is **not** a testing framework and **not** just an MCP server. It is a runtime observability layer that understands and
 reacts to a Flutter app while it is running.
 
 ## How It Works
@@ -64,7 +64,7 @@ Supported hosts: Claude Desktop, Claude Code, Cursor, Windsurf, Codex, Gemini CL
 Running `dashability` with no arguments shows an interactive menu:
 
 ```
-Dashability - AI Observability Layer for Flutter Apps
+Dashability - Runtime Observability Layer for Flutter Apps
 
 1. Start MCP Server
 2. Install MCP

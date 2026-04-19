@@ -7,9 +7,9 @@ import 'package:dashability/dashability.dart';
 import 'package:stream_channel/stream_channel.dart';
 
 const _serverInstructions = '''
-You have access to Dashability, an AI runtime observer for Flutter apps. Dashability connects to a running Flutter app via the Dart VM Service and gives you real-time performance data, logs, widget rebuild counts, and anomaly detection.
+You have access to Dashability, a runtime observability layer for Flutter apps. Dashability connects to a running Flutter app via the Dart VM Service and gives you real-time performance data, logs, widget rebuild counts, and anomaly detection.
 
-IMPORTANT: Dashability is a RUNTIME observer. You must actually run the Flutter app and observe it while it is running. Do not just read source code and do static analysis. The value of Dashability is that it tells you what is actually happening at runtime - frame drops, rebuild spikes, errors, and performance metrics from the live app.
+IMPORTANT: Dashability is a RUNTIME observability layer. You must actually run the Flutter app and observe it while it is running. Do not just read source code and do static analysis. The value of Dashability is that it tells you what is actually happening at runtime - frame drops, rebuild spikes, errors, and performance metrics from the live app.
 
 TOOLS:
 

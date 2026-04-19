@@ -1,6 +1,6 @@
 name: dashability
 description: >-
-  AI Observability Layer for Flutter Apps. Connects to running Flutter apps
+  Runtime Observability Layer for Flutter Apps. Connects to running Flutter apps
   via VM Service, monitors performance and errors in real-time, detects
   anomalies, and exposes observation and action tools via MCP.
 version: 0.1.0

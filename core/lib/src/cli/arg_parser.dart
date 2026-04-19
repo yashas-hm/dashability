@@ -50,7 +50,7 @@ ArgParser buildArgParser() {
 
 /// Print CLI help text.
 void printHelp(ArgParser parser) {
-  stderr.writeln('Dashability - AI Observability Layer for Flutter Apps');
+  stderr.writeln('Dashability - Runtime Observability Layer for Flutter Apps');
   stderr.writeln('');
   stderr.writeln('Usage: dashability [options]');
   stderr.writeln('');

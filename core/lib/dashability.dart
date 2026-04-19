@@ -1,4 +1,4 @@
-/// Dashability — AI Observability Layer for Flutter Apps.
+/// Dashability - Runtime Observability Layer for Flutter Apps.
 library dashability;
 
 // Actions

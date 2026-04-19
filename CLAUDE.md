@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Dashability is an **AI Observability Layer for Flutter apps** - a standalone external tool (not a package you add to
+Dashability is an **Runtime Observability Layer for Flutter apps** - a standalone external tool (not a package you add to
 your app) that connects to a running Flutter app via VM Service WebSocket, monitors performance/errors in real-time,
 detects anomalies locally, and exposes structured observation + action tools via MCP (Model Context Protocol).
 
-**It is not** a testing framework or just an MCP server. It is an AI runtime layer that understands and reacts to a
+**It is not** a testing framework or just an MCP server. It is a runtime observability layer that understands and reacts to a
 Flutter app while it is running.
 
 ## IMPORTANT: You Have Dashability MCP Tools
