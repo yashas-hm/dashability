@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dart_mcp/server.dart';
-import 'package:dashability_core/dashability_core.dart';
+import 'package:dashability/dashability.dart';
 
 /// Registers validation tools on the MCP server.
 void registerValidationTools(ToolsSupport server, AppiumActor actor) {

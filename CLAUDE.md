@@ -13,24 +13,21 @@ Flutter app while it is running.
 
 ## Build & Development Commands
 
-This is a Dart monorepo with three packages. Each has its own `pubspec.yaml`.
+This is a Dart monorepo with two packages. Each has its own `pubspec.yaml`.
 
 ```bash
 # Resolve dependencies (run in each package dir)
-cd core && dart pub get
 cd cli && dart pub get
 cd extensions && dart pub get
 
 # Run tests
-cd core && dart test
 cd cli && dart test
 cd extensions && dart test
 
 # Run a single test file
-cd core && dart test test/some_test.dart
+cd cli && dart test test/some_test.dart
 
 # Lint
-cd core && dart analyze
 cd cli && dart analyze
 cd extensions && dart analyze
 
@@ -45,7 +42,8 @@ dart run cli/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
 
 ### Monorepo Layout (flat, not nested under packages/)
 
-- **`core/`** (`dashability_core`) — The engine. Pure Dart, no Flutter SDK, no MCP. Contains:
+- **`cli/`** (`dashability`) — The main package. Contains the engine (connectors, observers, analysis, actions), MCP
+  server, and CLI entry point:
     - **Connectors** — Abstract `Connector` interface + `FlutterConnector` (VM Service over WebSocket). New framework
       support (React Native, SwiftUI) means adding a new connector here.
     - **Observers** — Abstract `Observer` interface + implementations (`FrameObserver`, `LogObserver`,
@@ -54,8 +52,6 @@ dart run cli/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
     - **Analysis** — `AnomalyDetector` (rule-based tier 1), `ContextCompressor` (raw signals → token-efficient JSON),
       typed event models (`FrameDrop`, `RebuildSpike`, `ErrorCaught`, etc.).
     - **Actions** — `AppiumActor` for app interaction (tap, scroll, type) via `appium_driver`. Gracefully optional.
-
-- **`cli/`** (`dashability`) — User-facing entry point. Depends on `dashability_core` via `path: ../core`. Contains:
     - **MCP Server** — Uses `dart_mcp` with `ToolsSupport` mixin, stdio transport. Registers observation tools (
       `get_current_metrics`, `get_logs`, `get_anomalies`), action tools (`tap`, `scroll`, `type`), and validation
       tools (`assert_visible`).
@@ -88,7 +84,7 @@ Flutter App (running) → VM Service WebSocket → FlutterConnector
 
 ## Code Rules
 
-- **Always use package imports, never relative imports.** Use `import 'package:dashability_core/...'` not
+- **Always use package imports, never relative imports.** Use `import 'package:dashability/...'` not
   `import '../src/...'`. This applies across all packages in the monorepo.
 
 ## Git & Commits
@@ -100,10 +96,10 @@ Flutter App (running) → VM Service WebSocket → FlutterConnector
 
 ## Key Dependencies
 
-| Package              | Used In | Purpose                           |
-|----------------------|---------|-----------------------------------|
-| `vm_service`         | core    | Typed Dart VM Service client      |
-| `web_socket_channel` | core    | WebSocket transport               |
-| `appium_driver`      | core    | App interaction (tap/scroll/type) |
-| `dart_mcp`           | cli     | MCP server SDK                    |
-| `args`               | cli     | CLI argument parsing              |
+| Package              | Purpose                           |
+|----------------------|-----------------------------------|
+| `vm_service`         | Typed Dart VM Service client      |
+| `web_socket_channel` | WebSocket transport               |
+| `appium_driver`      | App interaction (tap/scroll/type) |
+| `dart_mcp`           | MCP server SDK                    |
+| `args`               | CLI argument parsing              |

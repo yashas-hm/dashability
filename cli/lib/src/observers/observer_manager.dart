@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:dashability_core/src/analysis/event_types.dart';
-import 'package:dashability_core/src/connector/connector.dart';
-import 'package:dashability_core/src/observers/observer.dart';
+import 'package:dashability/src/analysis/event_types.dart';
+import 'package:dashability/src/connector/connector.dart';
+import 'package:dashability/src/observers/observer.dart';
 
 /// Manages the lifecycle of all observers and aggregates their event streams.
 class ObserverManager {

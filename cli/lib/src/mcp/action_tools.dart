@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dart_mcp/server.dart';
-import 'package:dashability_core/dashability_core.dart';
+import 'package:dashability/dashability.dart';
 
 /// Registers Appium action tools on the MCP server.
 void registerActionTools(ToolsSupport server, AppiumActor actor) {

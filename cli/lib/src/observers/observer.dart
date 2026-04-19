@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dashability_core/src/analysis/event_types.dart';
-import 'package:dashability_core/src/connector/connector.dart';
+import 'package:dashability/src/analysis/event_types.dart';
+import 'package:dashability/src/connector/connector.dart';
 
 /// Abstract interface for all observers.
 ///

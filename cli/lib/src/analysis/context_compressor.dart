@@ -1,4 +1,4 @@
-import 'package:dashability_core/src/analysis/event_types.dart';
+import 'package:dashability/src/analysis/event_types.dart';
 
 /// Compresses raw observation events into token-efficient structured JSON
 /// suitable for AI consumption.

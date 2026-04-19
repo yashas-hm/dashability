@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dashability_core/src/connector/connector.dart';
+import 'package:dashability/src/connector/connector.dart';
 import 'package:vm_service/vm_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 

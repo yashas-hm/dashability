@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:dashability_core/src/analysis/event_types.dart';
-import 'package:dashability_core/src/connector/config.dart';
+import 'package:dashability/src/analysis/event_types.dart';
+import 'package:dashability/src/connector/config.dart';
 
 /// Tier 1 rule-based anomaly detection.
 ///
