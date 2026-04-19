@@ -17,46 +17,48 @@ This is a Dart monorepo with two packages. Each has its own `pubspec.yaml`.
 
 ```bash
 # Resolve dependencies (run in each package dir)
-cd cli && dart pub get
+cd core && dart pub get
 cd extensions && dart pub get
 
 # Run tests
-cd cli && dart test
+cd core && dart test
 cd extensions && dart test
 
 # Run a single test file
-cd cli && dart test test/some_test.dart
+cd core && dart test test/some_test.dart
 
 # Lint
-cd cli && dart analyze
+cd core && dart analyze
 cd extensions && dart analyze
 
 # Compile CLI to native binary
-dart compile exe cli/bin/dashability.dart
+dart compile exe core/bin/dashability.dart
 
 # Run CLI directly
-dart run cli/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
+dart run core/bin/dashability.dart
+dart run core/bin/dashability.dart --project-dir ./example --profile
+dart run core/bin/dashability.dart --attach
+dart run core/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
 ```
 
 ## Architecture
 
 ### Monorepo Layout (flat, not nested under packages/)
 
-- **`cli/`** (`dashability`) — The main package. Contains the engine (connectors, observers, analysis, actions), MCP
-  server, and CLI entry point:
-    - **Connectors** — Abstract `Connector` interface + `FlutterConnector` (VM Service over WebSocket). New framework
-      support (React Native, SwiftUI) means adding a new connector here.
+- **`core/`** (`dashability`) — The main package. Contains the engine, MCP server, and CLI entry point:
+    - **Connectors** — Abstract `Connector` interface + `FlutterConnector` (VM Service over WebSocket).
     - **Observers** — Abstract `Observer` interface + implementations (`FrameObserver`, `LogObserver`,
       `RebuildObserver`). Each subscribes to VM Service streams and emits `ObservationEvent`s. `ObserverManager`
       aggregates all observer streams.
     - **Analysis** — `AnomalyDetector` (rule-based tier 1), `ContextCompressor` (raw signals → token-efficient JSON),
       typed event models (`FrameDrop`, `RebuildSpike`, `ErrorCaught`, etc.).
     - **Actions** — `AppiumActor` for app interaction (tap, scroll, type) via `appium_driver`. Gracefully optional.
-    - **MCP Server** — Uses `dart_mcp` with `ToolsSupport` mixin, stdio transport. Registers observation tools (
-      `get_current_metrics`, `get_logs`, `get_anomalies`), action tools (`tap`, `scroll`, `type`), and validation
-      tools (`assert_visible`).
-    - **CLI** — `bin/dashability.dart` with `args` parsing. Wires FlutterConnector → ObserverManager → AnomalyDetector →
-      MCP Server.
+    - **Flutter Process** — `FlutterProcess` for managing `flutter run`, `flutter attach`, `flutter devices`.
+    - **MCP Server** — Uses `dart_mcp` with `ToolsSupport` mixin, stdio transport. Registers lifecycle tools
+      (`list_devices`, `run_app`, `attach_to_app`, `stop_app`), observation tools (`get_current_metrics`, `get_logs`,
+      `get_anomalies`), action tools (`tap`, `scroll`, `type`), and validation tools (`assert_visible`).
+    - **CLI** — `bin/dashability.dart` with `args` parsing. Supports agent-driven mode (no flags), `--project-dir`,
+      `--attach`, `--uri` direct connect, and more.
 
 - **`extensions/`** (`dashability_extensions`) — Optional tiny package (zero external deps, uses only `dart:developer`). Users
   can add as `dev_dependency` for custom event reporting via `developer.postEvent`. Dashability works fully without it.

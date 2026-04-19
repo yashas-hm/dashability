@@ -16,7 +16,11 @@ class AnomalyDetector {
   final _pendingAnomalies = Queue<ObservationEvent>();
   static const _maxPending = 100;
 
-  AnomalyDetector(this._config);
+  // ignore: unused_field
+  final DashabilityConfig _config;
+
+  /// Creates an anomaly detector with the given [config] thresholds.
+  AnomalyDetector(DashabilityConfig config) : _config = config;
 
   /// Stream of detected anomalies.
   Stream<ObservationEvent> get anomalies => _anomalyController.stream;
