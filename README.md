@@ -1,12 +1,12 @@
 
 <div align="center">
-<img src="./assets/dashability_avatar.png" width="90%">
+<img src="./assets/dashability_avatar.png">
 
+## DashAbility
+#### AI Observability Layer for Flutter Apps
 </div>
 
-# Dashability
-
-AI Observability Layer for Flutter Apps, a standalone external tool that connects to a running Flutter app, monitors
+A standalone external tool that connects to a running Flutter app, monitors
 performance and errors in real-time, detects anomalies, and exposes structured observation + action tools via
 MCP (Model Context Protocol).
 
