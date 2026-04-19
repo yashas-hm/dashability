@@ -42,25 +42,25 @@ class AnomalyDetector {
   void _evaluate(ObservationEvent event) {
     switch (event) {
       case FrameDrop():
-        // Always report frame drops — they've already been filtered by FrameObserver.
+      // Always report frame drops — they've already been filtered by FrameObserver.
         _emit(event);
 
       case RebuildSpike():
-        // Always report — already filtered by RebuildObserver threshold.
+      // Always report — already filtered by RebuildObserver threshold.
         _emit(event);
 
       case ErrorCaught():
-        // All errors are anomalies.
+      // All errors are anomalies.
         _emit(event);
 
       case LogEntry():
-        // Only escalate error/severe level logs.
+      // Only escalate error/severe level logs.
         if (event.level == 'error' || event.level == 'severe') {
           _emit(event);
         }
 
       case MetricsSnapshot():
-        // Snapshots are informational, not anomalies.
+      // Snapshots are informational, not anomalies.
         break;
     }
   }

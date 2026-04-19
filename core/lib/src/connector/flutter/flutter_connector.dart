@@ -63,7 +63,7 @@ class FlutterConnector implements Connector {
 
       _service = VmService(
         _channel!.stream.cast<String>(),
-        (String message) => _channel!.sink.add(message),
+            (String message) => _channel!.sink.add(message),
       );
 
       // Resolve the main isolate.
@@ -92,8 +92,7 @@ class FlutterConnector implements Connector {
   }
 
   @override
-  Future<Map<String, dynamic>> callServiceExtension(
-    String method, {
+  Future<Map<String, dynamic>> callServiceExtension(String method, {
     String? isolateId,
     Map<String, String>? args,
   }) async {

@@ -10,13 +10,13 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'list_devices',
       description:
-          'List available Flutter devices (emulators, simulators, '
+      'List available Flutter devices (emulators, simulators, '
           'physical devices). Returns device IDs, names, and platforms. '
           'If no devices are found, prompt the user to start an emulator '
           'or connect a physical device.',
       inputSchema: ObjectSchema(),
     ),
-    (request) async {
+        (request) async {
       try {
         final devices = await server.flutterProcess.listDevices();
 
@@ -27,7 +27,7 @@ void registerLifecycleTools(DashabilityServer server) {
                 text: jsonEncode({
                   'devices': <dynamic>[],
                   'message':
-                      'No Flutter devices found. Ask the user to start '
+                  'No Flutter devices found. Ask the user to start '
                       'an emulator, open a simulator, or connect a '
                       'physical device, then try again.',
                 }),
@@ -42,7 +42,7 @@ void registerLifecycleTools(DashabilityServer server) {
               text: jsonEncode({
                 'devices': devices.map((d) => d.toJson()).toList(),
                 'message':
-                    'Found ${devices.length} device(s). '
+                'Found ${devices.length} device(s). '
                     'Ask the user which device to use, then call run_app '
                     'or attach_to_app with the chosen device ID.',
               }),
@@ -63,7 +63,7 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'run_app',
       description:
-          'Run a Flutter app and connect Dashability to it. '
+      'Run a Flutter app and connect Dashability to it. '
           'Spawns `flutter run` in the given project directory, '
           'waits for the app to start, and automatically begins '
           'observing performance, logs, and anomalies.',
@@ -74,7 +74,7 @@ void registerLifecycleTools(DashabilityServer server) {
           ),
           'device': Schema.string(
             description:
-                'Device ID to run on (required, from list_devices)',
+            'Device ID to run on (required, from list_devices)',
           ),
           'flavor': Schema.string(
             description: 'Build flavor (optional)',
@@ -86,7 +86,7 @@ void registerLifecycleTools(DashabilityServer server) {
         required: ['project_dir', 'device'],
       ),
     ),
-    (request) async {
+        (request) async {
       if (server.isConnected) {
         return CallToolResult(
           isError: true,
@@ -147,7 +147,7 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'attach_to_app',
       description:
-          'Attach to an already-running Flutter app. '
+      'Attach to an already-running Flutter app. '
           'Discovers running Flutter apps and connects Dashability. '
           'If multiple apps are running, returns a list for the user '
           'to choose from — call again with the chosen app_id.',
@@ -158,18 +158,18 @@ void registerLifecycleTools(DashabilityServer server) {
           ),
           'app_id': Schema.string(
             description:
-                'Specific app ID to attach to when multiple apps '
+            'Specific app ID to attach to when multiple apps '
                 'are running (optional, from a previous attach_to_app call)',
           ),
           'uri': Schema.string(
             description:
-                'VM Service WebSocket URI to connect to directly '
+            'VM Service WebSocket URI to connect to directly '
                 '(optional, skips discovery)',
           ),
         },
       ),
     ),
-    (request) async {
+        (request) async {
       if (server.isConnected) {
         return CallToolResult(
           isError: true,
@@ -241,7 +241,7 @@ void registerLifecycleTools(DashabilityServer server) {
                   'status': 'multiple_apps',
                   'apps': result.apps!.map((a) => a.toJson()).toList(),
                   'message':
-                      'Multiple Flutter apps found. Ask the user which '
+                  'Multiple Flutter apps found. Ask the user which '
                       'app to connect to, then call attach_to_app again '
                       'with the chosen app_id.',
                 }),
@@ -269,7 +269,7 @@ void registerLifecycleTools(DashabilityServer server) {
                   'status': 'multiple_apps',
                   'apps': e.apps!.map((a) => a.toJson()).toList(),
                   'message':
-                      'Multiple Flutter apps found. Ask the user which '
+                  'Multiple Flutter apps found. Ask the user which '
                       'app to connect to, then call attach_to_app again '
                       'with the chosen app_id.',
                 }),
@@ -290,12 +290,12 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'stop_app',
       description:
-          'Stop the running Flutter app and disconnect Dashability. '
+      'Stop the running Flutter app and disconnect Dashability. '
           'Kills the flutter process (if started by run_app) and '
           'stops all observers.',
       inputSchema: ObjectSchema(),
     ),
-    (request) async {
+        (request) async {
       try {
         await server.disconnectFromApp();
         await server.flutterProcess.stop();
@@ -324,12 +324,12 @@ void registerLifecycleTools(DashabilityServer server) {
     Tool(
       name: 'get_connection_status',
       description:
-          'Get the current connection status of Dashability. '
+      'Get the current connection status of Dashability. '
           'Returns whether connected, the VM Service URI, '
           'and whether a flutter process is managed.',
       inputSchema: ObjectSchema(),
     ),
-    (request) {
+        (request) {
       return CallToolResult(
         content: [
           TextContent(

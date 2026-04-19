@@ -10,7 +10,7 @@ class AppiumActor {
   AppiumWebDriver? _driver;
 
   AppiumActor({Uri? appiumUrl})
-    : _appiumUrl = appiumUrl ?? Uri.parse('http://localhost:4723');
+      : _appiumUrl = appiumUrl ?? Uri.parse('http://localhost:4723');
 
   /// Whether a driver session is active.
   bool get isConnected => _driver != null;

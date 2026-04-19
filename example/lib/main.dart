@@ -142,9 +142,13 @@ class _JankyCounterPageState extends State<JankyCounterPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Frame: $_frameCount', style: Theme.of(context).textTheme.displayMedium),
+            Text('Frame: $_frameCount', style: Theme
+                .of(context)
+                .textTheme
+                .displayMedium),
             const SizedBox(height: 16),
-            const Text('This page rebuilds every frame with expensive computation.'),
+            const Text(
+                'This page rebuilds every frame with expensive computation.'),
           ],
         ),
       ),
@@ -168,7 +172,9 @@ class HeavyListPage extends StatelessWidget {
           // Simulate expensive item build.
           final colors = List.generate(
             20,
-            (i) => Color.fromARGB(255, (index * 7 + i * 13) % 256, (index * 11 + i * 17) % 256, (index * 3 + i * 23) % 256),
+                (i) =>
+                Color.fromARGB(255, (index * 7 + i * 13) % 256,
+                    (index * 11 + i * 17) % 256, (index * 3 + i * 23) % 256),
           );
           return ListTile(
             leading: Container(

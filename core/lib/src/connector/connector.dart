@@ -30,8 +30,7 @@ abstract class Connector {
   Future<void> disconnect();
 
   /// Call a service extension on the connected app.
-  Future<Map<String, dynamic>> callServiceExtension(
-    String method, {
+  Future<Map<String, dynamic>> callServiceExtension(String method, {
     String? isolateId,
     Map<String, String>? args,
   });

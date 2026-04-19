@@ -25,7 +25,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
   /// Whether the server is connected to a Flutter app.
   bool get isConnected =>
       _connector != null &&
-      _connector!.state == ConnectorState.connected;
+          _connector!.state == ConnectorState.connected;
 
   /// The active connector, or `null` if not connected.
   FlutterConnector? get connector => _connector;
@@ -39,8 +39,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
   /// The context compressor (always available).
   ContextCompressor get contextCompressor => _contextCompressor;
 
-  DashabilityServer._(
-    StreamChannel<String> channel, {
+  DashabilityServer._(StreamChannel<String> channel, {
     required Implementation implementation,
     String? instructions,
     required this.flutterProcess,
@@ -49,14 +48,15 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
     FlutterConnector? connector,
     ObserverManager? observerManager,
     AnomalyDetector? anomalyDetector,
-  })  : _connector = connector,
+  })
+      : _connector = connector,
         _observerManager = observerManager,
         _anomalyDetector = anomalyDetector,
         super.fromStreamChannel(
-          channel,
-          implementation: implementation,
-          instructions: instructions,
-        );
+        channel,
+        implementation: implementation,
+        instructions: instructions,
+      );
 
   /// Create and start a Dashability MCP server on stdio.
   ///
@@ -76,7 +76,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
       channel,
       implementation: Implementation(name: 'dashability', version: '0.1.0'),
       instructions:
-          'Dashability AI Observability Layer for Flutter apps. '
+      'Dashability AI Observability Layer for Flutter apps. '
           'Use lifecycle tools to connect to a Flutter app, then '
           'use observation tools to monitor performance, logs, and anomalies. '
           'Use action tools to interact with the app via Appium.',

@@ -9,18 +9,15 @@ Future<void> main(List<String> arguments) async {
       'uri',
       abbr: 'u',
       help: 'VM Service WebSocket URI (direct connect, skips discovery)',
-    )
-    ..addOption(
+    )..addOption(
       'project-dir',
       abbr: 'p',
       help: 'Flutter project directory (runs flutter run)',
-    )
-    ..addOption(
+    )..addOption(
       'device',
       abbr: 'd',
       help: 'Target device ID',
-    )
-    ..addOption(
+    )..addOption(
       'flavor',
       help: 'Build flavor',
     )
@@ -29,8 +26,7 @@ Future<void> main(List<String> arguments) async {
       abbr: 'a',
       help: 'Attach to an already-running Flutter app',
       defaultsTo: false,
-    )
-    ..addFlag(
+    )..addFlag(
       'profile',
       help: 'Use profile-mode thresholds (120fps budget)',
       defaultsTo: false,
@@ -66,7 +62,8 @@ Future<void> main(List<String> arguments) async {
     stderr.writeln('  --uri <ws://...>       Direct connect to VM Service');
     stderr.writeln('  --project-dir <path>   Run flutter app from project dir');
     stderr.writeln('  --attach               Attach to running Flutter app');
-    stderr.writeln('  (no flags)             Start MCP server, agent connects via tools');
+    stderr.writeln(
+        '  (no flags)             Start MCP server, agent connects via tools');
     stderr.writeln('');
     stderr.writeln(parser.usage);
     exit(0);
@@ -113,7 +110,7 @@ Future<void> main(List<String> arguments) async {
         }
         stderr.writeln(
           'Use --uri to connect directly, or start the MCP server '
-          'without flags and let the agent choose.',
+              'without flags and let the agent choose.',
         );
         exit(1);
       } else {
@@ -192,7 +189,7 @@ Future<void> main(List<String> arguments) async {
   } else {
     stderr.writeln(
       'No connection target specified. '
-      'Agent can use list_devices, run_app, or attach_to_app tools.',
+          'Agent can use list_devices, run_app, or attach_to_app tools.',
     );
   }
 

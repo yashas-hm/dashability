@@ -48,12 +48,12 @@ class LogObserver implements Observer {
     );
     _subscriptions.add(
       connector.service.onStdoutEvent.listen(
-        (e) => _handleOutputEvent(e, 'stdout'),
+            (e) => _handleOutputEvent(e, 'stdout'),
       ),
     );
     _subscriptions.add(
       connector.service.onStderrEvent.listen(
-        (e) => _handleOutputEvent(e, 'stderr'),
+            (e) => _handleOutputEvent(e, 'stderr'),
       ),
     );
   }

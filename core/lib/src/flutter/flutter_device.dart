@@ -16,12 +16,14 @@ class FlutterDevice {
     return FlutterDevice(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      platform: json['targetPlatform'] as String? ?? json['platform'] as String? ?? 'unknown',
+      platform: json['targetPlatform'] as String? ??
+          json['platform'] as String? ?? 'unknown',
       isEmulator: json['emulator'] as bool? ?? false,
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'id': id,
         'name': name,
         'platform': platform,

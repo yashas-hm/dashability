@@ -40,7 +40,9 @@ class FrameObserver implements Observer {
     if (_frames.length < 2) return 60.0;
     final oldest = _frames.first.timestamp;
     final newest = _frames.last.timestamp;
-    final durationMs = newest.difference(oldest).inMilliseconds;
+    final durationMs = newest
+        .difference(oldest)
+        .inMilliseconds;
     if (durationMs <= 0) return 60.0;
     return (_frames.length - 1) / (durationMs / 1000.0);
   }

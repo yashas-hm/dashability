@@ -4,7 +4,8 @@ import 'package:dart_mcp/server.dart';
 import 'package:dashability/dashability.dart';
 
 /// Error result returned when the server is not connected to a Flutter app.
-CallToolResult _notConnectedError() => CallToolResult(
+CallToolResult _notConnectedError() =>
+    CallToolResult(
       isError: true,
       content: [
         TextContent(
@@ -21,19 +22,19 @@ void registerObservationTools(DashabilityServer server) {
     Tool(
       name: 'get_current_metrics',
       description:
-          'Get current app performance metrics: FPS, jank frames, '
+      'Get current app performance metrics: FPS, jank frames, '
           'error count, and widget rebuild hotspots.',
       inputSchema: ObjectSchema(),
     ),
-    (request) {
+        (request) {
       if (!server.isConnected) return _notConnectedError();
 
       final frameObserver =
-          server.observerManager!.getObserver<FrameObserver>();
+      server.observerManager!.getObserver<FrameObserver>();
       final logObserver =
-          server.observerManager!.getObserver<LogObserver>();
+      server.observerManager!.getObserver<LogObserver>();
       final rebuildObserver =
-          server.observerManager!.getObserver<RebuildObserver>();
+      server.observerManager!.getObserver<RebuildObserver>();
 
       final metrics = {
         'fps': frameObserver?.currentFps ?? 0.0,
@@ -51,7 +52,7 @@ void registerObservationTools(DashabilityServer server) {
     Tool(
       name: 'get_recent_frames',
       description:
-          'Get recent frame timing data including build and render '
+      'Get recent frame timing data including build and render '
           'times in milliseconds.',
       inputSchema: ObjectSchema(
         properties: {
@@ -61,11 +62,11 @@ void registerObservationTools(DashabilityServer server) {
         },
       ),
     ),
-    (request) {
+        (request) {
       if (!server.isConnected) return _notConnectedError();
 
       final frameObserver =
-          server.observerManager!.getObserver<FrameObserver>();
+      server.observerManager!.getObserver<FrameObserver>();
       final limit = (request.arguments?['limit'] as int?) ?? 20;
       final frames = frameObserver?.recentFrames ?? [];
       final limited = frames.length > limit
@@ -89,11 +90,11 @@ void registerObservationTools(DashabilityServer server) {
       description: 'Get the top rebuilding widgets sorted by rebuild count.',
       inputSchema: ObjectSchema(),
     ),
-    (request) {
+        (request) {
       if (!server.isConnected) return _notConnectedError();
 
       final rebuildObserver =
-          server.observerManager!.getObserver<RebuildObserver>();
+      server.observerManager!.getObserver<RebuildObserver>();
       final hotspots = rebuildObserver?.hotspots ?? [];
 
       final result = [
@@ -114,7 +115,7 @@ void registerObservationTools(DashabilityServer server) {
         properties: {
           'level': Schema.string(
             description:
-                'Filter by log level: fine, config, info, warning, error, severe',
+            'Filter by log level: fine, config, info, warning, error, severe',
           ),
           'limit': Schema.int(
             description: 'Max number of log entries to return (default 50)',
@@ -122,11 +123,11 @@ void registerObservationTools(DashabilityServer server) {
         },
       ),
     ),
-    (request) {
+        (request) {
       if (!server.isConnected) return _notConnectedError();
 
       final logObserver =
-          server.observerManager!.getObserver<LogObserver>();
+      server.observerManager!.getObserver<LogObserver>();
       final level = request.arguments?['level'] as String?;
       final limit = (request.arguments?['limit'] as int?) ?? 50;
 
@@ -165,7 +166,7 @@ void registerObservationTools(DashabilityServer server) {
         },
       ),
     ),
-    (request) async {
+        (request) async {
       if (!server.isConnected) return _notConnectedError();
 
       final depth = (request.arguments?['depth'] as int?) ?? 10;
@@ -208,11 +209,11 @@ void registerObservationTools(DashabilityServer server) {
     Tool(
       name: 'get_anomalies',
       description:
-          'Get detected anomalies since last call. Returns compressed '
+      'Get detected anomalies since last call. Returns compressed '
           'context optimized for AI analysis. Clears the buffer after reading.',
       inputSchema: ObjectSchema(),
     ),
-    (request) {
+        (request) {
       if (!server.isConnected) return _notConnectedError();
 
       final anomalies = server.anomalyDetector!.drainAnomalies();
@@ -226,11 +227,9 @@ void registerObservationTools(DashabilityServer server) {
 }
 
 /// Recursively prunes a widget tree to the given [maxDepth].
-Map<String, dynamic> _pruneTree(
-  Map<String, dynamic> node,
-  int maxDepth,
-  int currentDepth,
-) {
+Map<String, dynamic> _pruneTree(Map<String, dynamic> node,
+    int maxDepth,
+    int currentDepth,) {
   final pruned = <String, dynamic>{};
 
   if (node.containsKey('description')) {

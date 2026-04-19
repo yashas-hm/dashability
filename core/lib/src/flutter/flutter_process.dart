@@ -18,14 +18,16 @@ class AttachResult {
   const AttachResult({this.uri, this.apps, required this.message});
 
   bool get isConnected => uri != null;
+
   bool get hasMultipleApps => apps != null && apps!.length > 1;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'status': isConnected
             ? 'connected'
             : hasMultipleApps
-                ? 'multiple_apps'
-                : 'no_apps',
+            ? 'multiple_apps'
+            : 'no_apps',
         if (uri != null) 'uri': uri,
         if (apps != null)
           'apps': apps!.map((a) => a.toJson()).toList(),
@@ -41,7 +43,8 @@ class AppInstance {
 
   const AppInstance({required this.id, required this.name, this.uri});
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'id': id,
         'name': name,
         if (uri != null) 'uri': uri,
@@ -184,10 +187,8 @@ class FlutterProcess {
   }
 
   /// Start a flutter process and parse the VM Service URI from output.
-  Future<String> _startAndParseUri(
-    List<String> args,
-    String? workingDirectory,
-  ) async {
+  Future<String> _startAndParseUri(List<String> args,
+      String? workingDirectory,) async {
     final process = await Process.start(
       'flutter',
       args,
@@ -213,7 +214,7 @@ class FlutterProcess {
         } else {
           uriCompleter.completeError(FlutterProcessException(
             'Flutter process exited with code $code before '
-            'VM Service URI was found.',
+                'VM Service URI was found.',
           ));
         }
         _process = null;
@@ -231,11 +232,9 @@ class FlutterProcess {
     );
   }
 
-  void _listenToStream(
-    Stream<List<int>> stream,
-    Completer<String> uriCompleter,
-    List<AppInstance> appInstances,
-  ) {
+  void _listenToStream(Stream<List<int>> stream,
+      Completer<String> uriCompleter,
+      List<AppInstance> appInstances,) {
     stream
         .transform(utf8.decoder)
         .transform(const LineSplitter())

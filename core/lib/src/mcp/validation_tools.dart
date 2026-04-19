@@ -10,7 +10,7 @@ void registerValidationTools(ToolsSupport server, AppiumActor actor) {
     Tool(
       name: 'assert_visible',
       description:
-          'Check if an element with the given text/ID is visible on screen.',
+      'Check if an element with the given text/ID is visible on screen.',
       inputSchema: ObjectSchema(
         required: ['text'],
         properties: {
@@ -21,7 +21,7 @@ void registerValidationTools(ToolsSupport server, AppiumActor actor) {
       ),
       annotations: ToolAnnotations(readOnlyHint: true),
     ),
-    (request) async {
+        (request) async {
       final text = request.arguments!['text'] as String;
       final visible = await actor.isVisible(text);
 

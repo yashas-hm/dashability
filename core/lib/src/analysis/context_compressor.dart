@@ -89,10 +89,8 @@ class ContextCompressor {
     };
   }
 
-  Map<String, dynamic> _compressErrors(
-    List<ErrorCaught> errors,
-    List<LogEntry> errorLogs,
-  ) {
+  Map<String, dynamic> _compressErrors(List<ErrorCaught> errors,
+      List<LogEntry> errorLogs,) {
     final messages = <String>[
       ...errors.map((e) => e.message),
       ...errorLogs.map((l) => l.message),

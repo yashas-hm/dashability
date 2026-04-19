@@ -18,7 +18,7 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
       ),
       annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
-    (request) async {
+        (request) async {
       final text = request.arguments?['text'] as String?;
       final id = request.arguments?['id'] as String?;
 
@@ -63,7 +63,7 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
       ),
       annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
-    (request) async {
+        (request) async {
       final direction = request.arguments!['direction'] as String;
       final distance = (request.arguments?['distance'] as num?)?.toDouble();
 
@@ -95,7 +95,7 @@ void registerActionTools(ToolsSupport server, AppiumActor actor) {
       ),
       annotations: ToolAnnotations(destructiveHint: false, readOnlyHint: false),
     ),
-    (request) async {
+        (request) async {
       final field = request.arguments!['field'] as String;
       final value = request.arguments!['value'] as String;
 
