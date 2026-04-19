@@ -19,12 +19,12 @@ This is a Dart monorepo with three packages. Each has its own `pubspec.yaml`.
 # Resolve dependencies (run in each package dir)
 cd core && dart pub get
 cd cli && dart pub get
-cd helper && dart pub get
+cd extensions && dart pub get
 
 # Run tests
 cd core && dart test
 cd cli && dart test
-cd helper && dart test
+cd extensions && dart test
 
 # Run a single test file
 cd core && dart test test/some_test.dart
@@ -32,7 +32,7 @@ cd core && dart test test/some_test.dart
 # Lint
 cd core && dart analyze
 cd cli && dart analyze
-cd helper && dart analyze
+cd extensions && dart analyze
 
 # Compile CLI to native binary
 dart compile exe cli/bin/dashability.dart
@@ -62,7 +62,7 @@ dart run cli/bin/dashability.dart --uri ws://127.0.0.1:XXXXX/ws
     - **CLI** — `bin/dashability.dart` with `args` parsing. Wires FlutterConnector → ObserverManager → AnomalyDetector →
       MCP Server.
 
-- **`helper/`** (`dashability_helper`) — Optional tiny package (zero external deps, uses only `dart:developer`). Users
+- **`extensions/`** (`dashability_extensions`) — Optional tiny package (zero external deps, uses only `dart:developer`). Users
   can add as `dev_dependency` for custom event reporting via `developer.postEvent`. Dashability works fully without it.
 
 - **`example/`** — Standalone Flutter demo app with deliberately janky widgets.

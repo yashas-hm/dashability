@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:dashability_helper/dashability_helper.dart';
+import 'package:dashability_extensions/dashability_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

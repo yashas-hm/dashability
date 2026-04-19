@@ -1,4 +1,4 @@
-name: dashability_helper
+name: dashability_extensions
 description: "Optional in-app instrumentation helpers for Dashability. Zero external dependencies."
 version: 0.1.0
 
