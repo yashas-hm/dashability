@@ -9,3 +9,5 @@
 - MCP server with lifecycle, observation, action, and validation tools
 - Flutter process management (run, attach, device listing)
 - Appium integration for tap, scroll, and type actions
+- Interactive arrow-key CLI selection menu
+- Modular CLI architecture with install-mcp host support for Codex, Gemini CLI, and OpenCode
