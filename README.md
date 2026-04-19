@@ -1,6 +1,6 @@
 
 <div align="center">
-<img src="./assets/dashability_avatar.png" width="50%">
+<img src="https://raw.githubusercontent.com/yashas-hm/dashability/refs/heads/main/assets/dashability_avatar.png" width="50%">
 
 ### Runtime Observability Layer for Flutter Apps
 </div>
