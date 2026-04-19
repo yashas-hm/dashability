@@ -109,7 +109,7 @@ final class DashabilityServer extends MCPServer with ToolsSupport {
 
     final server = DashabilityServer._(
       channel,
-      implementation: Implementation(name: 'dashability', version: '0.1.0'),
+      implementation: Implementation(name: 'dashability', version: '1.0.0'),
       instructions: _serverInstructions,
       flutterProcess: flutterProcess ?? FlutterProcess(),
       config: config,
