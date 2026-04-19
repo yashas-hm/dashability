@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dashability/src/cli/cli_select.dart';
+
 /// Supported AI host for MCP server configuration.
 class McpHost {
   final String key;
@@ -109,21 +111,16 @@ Future<void> installMcp(List<String> args) async {
     host = found.first;
   } else {
     // Interactive: prompt user to pick.
-    stdout.writeln('Select an AI host to configure:');
-    stdout.writeln('');
-    for (var i = 0; i < mcpHosts.length; i++) {
-      stdout.writeln('  [${i + 1}] ${mcpHosts[i].name}');
+    final hostNames = mcpHosts.map((h) => h.name).toList();
+    final index = cliSelect(
+      options: hostNames,
+      prompt: 'Select an AI host to configure:',
+    );
+    if (index == -1) {
+      exit(0);
     }
     stdout.writeln('');
-    stdout.write('Enter number (1-${mcpHosts.length}): ');
-
-    final input = stdin.readLineSync();
-    final index = int.tryParse(input ?? '');
-    if (index == null || index < 1 || index > mcpHosts.length) {
-      stderr.writeln('Invalid selection.');
-      exit(1);
-    }
-    host = mcpHosts[index - 1];
+    host = mcpHosts[index];
   }
 
   final path = host.configPath();

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dashability/dashability.dart';
+import 'package:dashability/src/cli/cli_select.dart';
 
 /// Resolve the VM Service URI from CLI arguments.
 ///
@@ -91,17 +92,21 @@ Future<String> _resolveRunApp(
     exit(1);
   }
 
-  stderr.writeln('Available devices:');
-  for (var i = 0; i < devices.length; i++) {
-    stderr.writeln('  [$i] ${devices[i]}');
+  final deviceOptions = devices.map((d) {
+    final emulator = d.isEmulator ? ' (emulator)' : '';
+    return '${d.name} [${d.platform}]$emulator';
+  }).toList();
+
+  final index = cliSelect(
+    options: deviceOptions,
+    prompt: 'Select device:',
+  );
+
+  if (index == -1) {
+    exit(0);
   }
-  stderr.write('Select device (0-${devices.length - 1}): ');
-  final input = stdin.readLineSync();
-  final index = int.tryParse(input ?? '');
-  if (index == null || index < 0 || index >= devices.length) {
-    stderr.writeln('Invalid selection.');
-    exit(1);
-  }
+
+  stdout.writeln('');
 
   stderr.writeln('Running Flutter app on ${devices[index]}...');
   return flutterProcess.run(
