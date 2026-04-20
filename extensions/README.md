@@ -11,7 +11,7 @@ Dashability picks them up automatically via the VM Service logging stream.
 
 ```yaml
 dev_dependencies:
-  dashability_extensions: ^0.1.0
+  dashability_extensions: ^1.0.2
 ```
 
 ## Usage

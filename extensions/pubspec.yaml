@@ -2,7 +2,7 @@ name: dashability_extensions
 description: >-
   Optional in-app instrumentation helpers for Dashability. Report custom
   interactions, metrics, and screen changes. Zero external dependencies.
-version: 1.0.0
+version: 1.0.2
 repository: https://github.com/yashas-hm/dashability
 
 environment:
