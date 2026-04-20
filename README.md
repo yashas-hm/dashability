@@ -9,7 +9,7 @@ A standalone external tool that connects to a running Flutter app, monitors
 performance and errors in real-time, detects anomalies, and exposes structured observation + action tools via
 MCP (Model Context Protocol).
 
-Dashability is **not** a testing framework and **not** just an MCP server. It is a runtime observability layer that understands and
+[Dashability](https://pub.dev/packages/dashability) is **not** a testing framework and **not** just an MCP server. It is a runtime observability layer that understands and
 reacts to a Flutter app while it is running.
 
 ## How It Works
@@ -151,7 +151,7 @@ dashability/
 └── example/    Demo Flutter app      - Deliberately janky widgets for testing
 ```
 
-### core/ (dashability)
+### [Dashability](https://pub.dev/packages/dashability)
 
 The main package. Contains the engine (connectors, observers, analysis, actions), Flutter process management,
 MCP server, and CLI entry point.
@@ -177,7 +177,7 @@ dashability [options]
 | `--profile` | Use profile-mode thresholds (120fps budget) |
 | `--appium-url` | Appium server URL, enables action/validation tools |
 
-### extensions/ (dashability_extensions)
+### [Dashability Extension](https://pub.dev/packages/dashability_extensions)
 
 Optional tiny package users can add as `dev_dependency` for richer custom event reporting. Zero external dependencies -
 uses only `dart:developer`.
